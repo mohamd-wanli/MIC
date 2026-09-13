@@ -1,0 +1,1 @@
+{{ $courses->appends(request()->all())->links() }}
