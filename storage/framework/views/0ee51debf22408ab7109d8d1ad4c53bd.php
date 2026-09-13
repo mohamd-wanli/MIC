@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'تقرير التحصيل اليومي'); ?>
 
 <?php $__env->startSection('css'); ?>
@@ -139,4 +137,5 @@
     </div>
 </div>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\wanli\Desktop\mic\resources\views/payments/reports/collections.blade.php ENDPATH**/ ?>

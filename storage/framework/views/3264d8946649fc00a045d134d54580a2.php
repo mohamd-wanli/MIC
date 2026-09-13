@@ -593,7 +593,7 @@
 <?php $__env->startSection('js'); ?>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script>
-  
+
     document.addEventListener('DOMContentLoaded', function() {
     var searchForm = document.querySelector('form.search-box-modern');
     var searchInput = searchForm.querySelector('input[name="search"]');
@@ -603,14 +603,14 @@
         clearTimeout(timeout);
         timeout = setTimeout(function() {
             searchForm.submit();
-        },5000); 
+        },5000);
     });
 });
         // Auto-close alerts after 5 seconds
         setTimeout(function() {
             $('.alert-modern').fadeOut('slow');
         }, 5000);
-    
+
 </script>
 <?php $__env->stopSection(); ?>
 <?php $__env->stopSection(); ?>

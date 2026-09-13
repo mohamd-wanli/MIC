@@ -49,7 +49,7 @@
             <tr>
                 <th>#</th>
                 <th>رقم الوصل</th>
-                <th>تاريخ التحصيل</th>
+                {{-- <th>تاريخ التحصيل</th> --}}
                 <th>الطالب</th>
                 <th>الدورة</th>
                 <th>المبلغ</th>
@@ -64,7 +64,7 @@
                 <tr>
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $p->receipt_number ?? '—' }}</td>
-                    <td>{{ $p->collected_at ? $p->collected_at->format('Y-m-d') : '—' }}</td>
+                    {{-- <td>{{ $p->collected_at ? $p->collected_at->format('Y-m-d') : '—' }}</td> --}}
                     <td>{{ $p->student->fullname ?? '—' }}</td>
                     <td>{{ $p->course->subject_name ?? '—' }}</td>
                     <td>{{ number_format($p->payment_value) }} ج.م</td>

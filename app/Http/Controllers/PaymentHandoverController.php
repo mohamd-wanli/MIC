@@ -28,7 +28,7 @@ class PaymentHandoverController extends Controller
         $query = Payment::pending()
             ->with(['student', 'course', 'department', 'enteredBy']);
 
-        
+
         if (auth()->user()->department_id && !auth()->user()->hasRole('Admin')) {
             $query->where('department_id', auth()->user()->department_id);
         }
@@ -237,7 +237,7 @@ class PaymentHandoverController extends Controller
         $title    = 'تقرير التحصيل اليومي';
         $subtitle = "من {$from} إلى {$to}";
 
-        return view('payments.reports.print_document',
+        return view('payments.reports.print_document_collection',
             compact('payments', 'title', 'subtitle'));
     }
 

@@ -8,22 +8,23 @@
 
     /* Page Header */
     .page-header-modern {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 25px 30px;
-        border-radius: 16px 16px 0 0;
+        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 45%, #0ea5a4 100%);
+        padding: 28px 30px;
+        border-radius: 18px 18px 0 0;
         position: relative;
         overflow: hidden;
         margin-bottom: 0;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
     }
 
     .page-header-modern::before {
         content: '';
         position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 250px;
-        height: 250px;
-        background: rgba(255, 255, 255, 0.05);
+        top: -60%;
+        right: -8%;
+        width: 260px;
+        height: 260px;
+        background: rgba(255, 255, 255, 0.07);
         border-radius: 50%;
         pointer-events: none;
     }
@@ -31,19 +32,19 @@
     .page-header-modern::after {
         content: '';
         position: absolute;
-        bottom: -30%;
-        left: -5%;
-        width: 150px;
-        height: 150px;
-        background: rgba(255, 255, 255, 0.03);
+        bottom: -25%;
+        left: -6%;
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.04);
         border-radius: 50%;
         pointer-events: none;
     }
 
     .page-header-modern h3 {
         color: #ffffff;
-        font-weight: 700;
-        font-size: 1.6rem;
+        font-weight: 800;
+        font-size: 1.7rem;
         margin: 0;
         position: relative;
         z-index: 1;
@@ -53,8 +54,8 @@
     }
 
     .page-header-modern p {
-        color: rgba(255, 255, 255, 0.85);
-        margin: 5px 0 0 0;
+        color: rgba(255, 255, 255, 0.88);
+        margin: 8px 0 0 0;
         font-size: 0.9rem;
         position: relative;
         z-index: 1;
@@ -62,43 +63,45 @@
 
     .page-header-modern .header-stats {
         display: flex;
-        gap: 20px;
+        gap: 14px;
         position: relative;
         z-index: 1;
         flex-wrap: wrap;
+        justify-content: flex-end;
     }
 
     .page-header-modern .header-stats .stat-item {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.12);
         backdrop-filter: blur(10px);
-        padding: 8px 18px;
-        border-radius: 50px;
+        padding: 9px 16px;
+        border-radius: 999px;
         color: #ffffff;
-        font-size: 0.85rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.82rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
     }
 
     .page-header-modern .header-stats .stat-item strong {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     /* Main Card */
     .main-card-modern {
         background: #ffffff;
-        border-radius: 16px;
+        border-radius: 18px;
         overflow: hidden;
-        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
-        border: 1px solid #eef2f7;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(148, 163, 184, 0.18);
     }
 
     /* Action Bar */
     .action-bar-modern {
-        background: #f8faff;
-        padding: 15px 25px;
-        border-bottom: 1px solid #eef2f7;
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        padding: 16px 25px;
+        border-bottom: 1px solid #e5e7eb;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -234,15 +237,15 @@
     }
 
     .table-modern thead th {
-        font-weight: 600;
+        font-weight: 700;
         padding: 12px 15px;
         text-align: center;
         font-size: 0.78rem;
         text-transform: uppercase;
         letter-spacing: 0.3px;
-        border-bottom: 2px solid #eef2f7;
-        background: #f8faff;
-        color: #2d3436;
+        border-bottom: 2px solid #e2e8f0;
+        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+        color: #1f2937;
     }
 
     .table-modern thead th.primary-header {
@@ -752,12 +755,12 @@
                                 <td><input type="text" name="mothername" class="form-control" value="<?php echo e(old('mothername', $y->mothername)); ?>"></td>
                                 <td><strong>الرقم الوطني:</strong></td>
                                 <td><input type="text" name="national_number" class="form-control" value="<?php echo e(old('national_number', $students->national_number)); ?>"></td>
-                                 <td><strong>مكان الولادة:</strong></td>
-    <td>
-        <input type="text" name="date_of_birth" class="form-control"
-               value="<?php echo e(old('date)of)birth', $y->date_of_birth)); ?>"
-               placeholder="أدخل مكان الولادة">
-    </td>
+                                <td><strong>مكان الولادة:</strong></td>
+                                <td>
+                                    <input type="text" name="date_of_birth" class="form-control"
+                                           value="<?php echo e(old('date_of_birth', $y->date_of_birth)); ?>"
+                                           placeholder="أدخل مكان الولادة">
+                                </td>
                                 <td><strong>الجنسية:</strong></td>
                                 <td><input type="text" name="nationality" class="form-control" value="<?php echo e(old('nationality', $y->nationality)); ?>"></td>
                             </tr>
