@@ -171,15 +171,6 @@
                         </a>
                     </li>
 
-                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('تقرير التحصيل اليومي')): ?>
-                        <li>
-                            <a href="<?php echo e(route('payments.reports.collections')); ?>"
-                               class="<?php echo \Illuminate\Support\Arr::toCssClasses(['active' => request()->routeIs('payments.reports.collections')]); ?>">
-                                <i class="bi bi-cash-stack" aria-hidden="true"></i>
-                                <span>تقرير التحصيل اليومي</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
 
                     <li>
                         <a href="<?php echo e(route('payments.reports.handovers')); ?>"

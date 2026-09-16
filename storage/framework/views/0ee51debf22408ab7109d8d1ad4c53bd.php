@@ -73,7 +73,7 @@
                 </div>
                 <div class="summary-card">
                     <div class="num"><?php echo e(number_format($payments->sum('payment_value'))); ?></div>
-                    <div class="lbl">إجمالي التحصيل (ج.م)</div>
+                    <div class="lbl">إجمالي التحصيل (ل.س)</div>
                 </div>
                 <div class="summary-card">
                     <div class="num"><?php echo e($daily->count()); ?></div>
@@ -84,7 +84,7 @@
                         <?php echo e($daily->count() ? number_format($payments->sum('payment_value') / $daily->count()) : 0); ?>
 
                     </div>
-                    <div class="lbl">متوسط اليوم (ج.م)</div>
+                    <div class="lbl">متوسط اليوم (ل.س)</div>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
                                 <td><strong style="color:#667eea;"><?php echo e($p->receipt_number ?? '—'); ?></strong></td>
                                 <td><?php echo e($p->student->fullname ?? '—'); ?></td>
                                 <td><?php echo e($p->course->subject_name ?? '—'); ?></td>
-                                <td><strong><?php echo e(number_format($p->payment_value)); ?> ج.م</strong></td>
+                                <td><strong><?php echo e(number_format($p->payment_value)); ?> ل.س</strong></td>
                                 <td><?php echo e($p->department->name ?? '—'); ?></td>
                                 <td><?php echo e($p->enteredBy->name ?? '—'); ?></td>
                             </tr>
@@ -125,7 +125,7 @@
                     <tfoot>
                         <tr style="background:#f8faff; font-weight:700;">
                             <td colspan="5">الإجمالي</td>
-                            <td><?php echo e(number_format($payments->sum('payment_value'))); ?> ج.م</td>
+                            <td><?php echo e(number_format($payments->sum('payment_value'))); ?> ل.س</td>
                             <td colspan="2"></td>
                         </tr>
                     </tfoot>

@@ -123,7 +123,9 @@ public function financialReport(Request $request)
             ->join('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->join('courses', 'stucourse.course_id', '=', 'courses.id')
             ->select(
-                'students.fullname',
+                 'students.firstname',
+    'students.lastname',
+                  DB::raw("(SELECT TRIM(CONCAT(students.firstname, ' ' , students.lastname)) AS fullname)"),
                 'students.fathername',
                 'students.national_number',
                 'extra_student.mothername',

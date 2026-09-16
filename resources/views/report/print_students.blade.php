@@ -218,6 +218,7 @@
         <th>اسم الأم</th>
         <th>الرقم الوطني</th>
         <th>تاريخ ومكان الولادة</th>
+        <th>المستوى الثقافي</th>
         <th>رقم الهاتف</th>
         <th>الجوال</th>
         <th>عنوان السكن</th>
@@ -236,6 +237,7 @@
             <td>{{ $student->Extrastudent->mothername ?? '-' }}</td>
             <td>{{ $student->national_number ?? '-' }}</td>
             <td>{{ $student->Extrastudent->date_of_birth ?? '-' }}</td>
+            <td>{{ $student->Extrastudent->cultural_level }}</td>
             <td>{{ $student->Extrastudent->telephone ?? '-' }}</td>
             <td>{{ $student->Extrastudent->mobile ?? '-' }}</td>
             <td>{{ $student->Extrastudent->address ?? '-' }}</td>

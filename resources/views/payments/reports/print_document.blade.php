@@ -39,7 +39,7 @@
             <div>عدد الإيصالات</div>
         </div>
         <div>
-            <div class="num">{{ number_format($payments->sum('payment_value')) }} ج.م</div>
+            <div class="num">{{ number_format($payments->sum('payment_value')) }} ل.س</div>
             <div>الإجمالي</div>
         </div>
     </div>
@@ -51,9 +51,12 @@
                 <th>رقم الوصل</th>
                 {{-- <th>تاريخ التحصيل</th> --}}
                 <th>الطالب</th>
-                <th>الدورة</th>
+                   <th>الدورة</th>
+                 <th>رقم الدورة</th>
                 <th>المبلغ</th>
-                <th>القسم</th>
+                <th>الحسم</th>
+                <th>نوع الدفعة</th>
+
                 @if(isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at)
                     <th>تاريخ التسليم</th>
                 @endif
@@ -65,10 +68,12 @@
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $p->receipt_number ?? '—' }}</td>
                     {{-- <td>{{ $p->collected_at ? $p->collected_at->format('Y-m-d') : '—' }}</td> --}}
-                    <td>{{ $p->student->fullname ?? '—' }}</td>
+                      <td>{{ $p->student->fullname ?? '—' }}</td>
                     <td>{{ $p->course->subject_name ?? '—' }}</td>
-                    <td>{{ number_format($p->payment_value) }} ج.م</td>
-                    <td>{{ $p->department->name ?? '—' }}</td>
+                   <td>{{ $p->course->coursenumber ?? '—' }}</td>
+                    <td>{{ number_format($p->payment_value) }} ل.س</td>
+                    <td>{{ $p->discount }}</td>
+                    <td>{{ $p->payment_category }}</td>
                     @if(isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at)
                         <td>{{ $p->surrendered_at ? $p->surrendered_at->format('Y-m-d H:i') : '—' }}</td>
                     @endif
@@ -78,7 +83,7 @@
         <tfoot>
             <tr>
                 <td colspan="5">الإجمالي</td>
-                <td>{{ number_format($payments->sum('payment_value')) }} ج.م</td>
+                <td>{{ number_format($payments->sum('payment_value')) }} ل.س</td>
                 <td colspan="{{ isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at ? 2 : 1 }}"></td>
             </tr>
         </tfoot>

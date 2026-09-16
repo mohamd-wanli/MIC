@@ -228,7 +228,7 @@
         </div>
        <div class="stats">
     <span class="stat-item"><i class="fas fa-receipt"></i> إجمالي المدفوعات: <strong>{{ $totalPaymentCount }}</strong></span>
-    <span class="stat-item"><i class="fas fa-money-bill-wave"></i> المجموع الكلي: <strong>{{ number_format($totalSum) }} ج.م</strong></span>
+    <span class="stat-item"><i class="fas fa-money-bill-wave"></i> المجموع الكلي: <strong>{{ number_format($totalSum) }} ل.س</strong></span>
     <span class="stat-item"><i class="fas fa-users"></i> عدد الطلاب: <strong>{{ $reportData ? count($reportData) : 0 }}</strong></span>
 </div>
     </div>
@@ -304,14 +304,14 @@
                             <td><strong>{{ $data->student_name }}</strong></td>
                             <td>{{ $data->course_number }}</td>
                             <td>{{ $data->course_name }}</td>
-                            <td><strong>{{ number_format($data->course_price) }} ج.م</strong></td>
-                            <td><strong>{{ number_format($data->total_paid) }} ج.م</strong></td>
+                            <td><strong>{{ number_format($data->course_price) }} ل.س</strong></td>
+                            <td><strong>{{ number_format($data->total_paid) }} ل.س</strong></td>
                             <td>{{ $data->payment_count }}</td>
                             <td>
                                 @if($data->remaining == 0)
-                                    <span class="status-paid">0 ج.م</span>
+                                    <span class="status-paid">0 ل.س</span>
                                 @else
-                                    <span class="status-partial">{{ number_format($data->remaining) }} ج.م</span>
+                                    <span class="status-partial">{{ number_format($data->remaining) }} ل.س</span>
                                 @endif
                             </td>
                             <td>
@@ -353,7 +353,7 @@
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
                                                     <td><strong>{{ $payment->id }}</strong></td>
-                                                    <td>{{ number_format($payment->payment_value) }} ج.م</td>
+                                                    <td>{{ number_format($payment->payment_value) }} ل.س</td>
                                                     <td>
                                                         @switch($payment->payment_type)
                                                             @case('cash') 💰 نقدي @break
@@ -384,10 +384,10 @@
                 <tfoot>
                     <tr>
                         <td colspan="4" class="total-label">الإجمالي الكلي</td>
-                        <td>{{ number_format($sumCoursePrice) }} ج.م</td>
-                        <td>{{ number_format($sumTotalPaid) }} ج.م</td>
+                        <td>{{ number_format($sumCoursePrice) }} ل.س</td>
+                        <td>{{ number_format($sumTotalPaid) }} ل.س</td>
                         <td>{{ $sumPaymentCount }}</td>
-                        <td>{{ number_format($sumRemaining) }} ج.م</td>
+                        <td>{{ number_format($sumRemaining) }} ل.س</td>
                         <td colspan="3"></td>
                     </tr>
                 </tfoot>

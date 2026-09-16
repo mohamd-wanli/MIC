@@ -35,6 +35,7 @@ class certification_Report extends Controller
             ->join('stucourse', 'students.id', '=', 'stucourse.student_id')
             ->join('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->join('courses', 'stucourse.course_id', '=', 'courses.id')
+
             ->select(
                 'students.id as student_id',
                 'students.fullname',
@@ -46,9 +47,16 @@ class certification_Report extends Controller
                 'extra_student.date_of_birth',
                    'extra_student.birth_date',
                 'extra_student.nationality',
+                'extra_student.mobile',
                 'stucourse.page_number',
                 'stucourse.general_number',
                 'courses.days_of_course',
+                 DB::raw("(
+                     SELECT TRIM(CONCAT(t.name, ' ', t.lastname))
+                      FROM teachers t
+                      WHERE t.id = courses.teacher_id
+                       LIMIT 1
+                       ) as teacherfull"),
 
                 // معلومات الدورة
                 'courses.subject_name as course_name',
@@ -58,6 +66,7 @@ class certification_Report extends Controller
                 'courses.start_hour',
                 'courses.end_hour',
             )
+
 
             //            ->when($courseId, function ($query, $courseId) {
 //                return $query->where('courses.id', $courseId);
@@ -72,11 +81,22 @@ class certification_Report extends Controller
             ->when($endAt, function ($query, $endAt) {
                 return $query->where('courses.end_date', '<=', $endAt);
             })
-            ->when($teacherName, function ($query, $teacherName) {
-                return $query->where('courses.teacher_name', 'like', '%' . $teacherName . '%');
-            })
-            ->take(25)
+               ->when($teacherName, function ($query, $teacherName) {
+
+    $query->whereExists(function ($sub) use ($teacherName) {
+        $sub->select(DB::raw(1))
+            ->from('teachers as t')
+            ->whereColumn('t.id', 'courses.teacher_id')
+            ->where(function ($q) use ($teacherName) {
+                $q->where('t.name', 'like', "%{$teacherName}%")
+                  ->orWhere('t.lastname', 'like', "%{$teacherName}%");
+            });
+    })->orWhere('courses.teacher_name', 'like', "%{$teacherName}%");
+
+})
+        ->take(25)
             ->get();
+
         $courseInfo = $students->first();
          $page_number = $request->page_number;
         $courses = Course::all();
@@ -92,6 +112,7 @@ class certification_Report extends Controller
     $student->certificate_eligible = ($age !== null && $age >= 15);
     return $student;
 });
+
         return view('report.certification_report', compact('students', 'courses', 'courseInfo','page_number'));
 
     }
@@ -119,10 +140,16 @@ class certification_Report extends Controller
             'extra_student.date_of_birth',
             'extra_student.nationality',
             'extra_student.birth_date',
+            'extra_student.mobile',
 
             'stucourse.page_number',
             'stucourse.general_number',
-
+             DB::raw("(
+                     SELECT TRIM(CONCAT(t.name, ' ', t.lastname))
+                      FROM teachers t
+                      WHERE t.id = courses.teacher_id
+                       LIMIT 1
+                       ) as teacherfull"),
             // ✅ أهم شي: ربط مباشر وصحيح
             'stucourse.course_id',
             'courses.subject_name as course_name',
@@ -144,9 +171,18 @@ class certification_Report extends Controller
         ->when($endAt, function ($query) use ($endAt) {
             $query->where('courses.end_date', '<=', $endAt);
         })
-        ->when($teacherName, function ($query) use ($teacherName) {
-            $query->where('courses.teacher_name', 'like', "%{$teacherName}%");
-        })
+           ->when($teacherName, function ($query, $teacherName) {
+
+    $query->whereExists(function ($sub) use ($teacherName) {
+        $sub->select(DB::raw(1))
+            ->from('teachers as t')
+            ->whereColumn('t.id', 'courses.teacher_id')
+            ->where(function ($q) use ($teacherName) {
+                $q->where('t.name', 'like', "%{$teacherName}%")
+                  ->orWhere('t.lastname', 'like', "%{$teacherName}%");
+            });
+    })->orWhere('courses.teacher_name', 'like', "%{$teacherName}%");
+                })
 
         // ✅ أهم سطرين (يمنع الخربطة)
         ->orderBy('stucourse.page_number')

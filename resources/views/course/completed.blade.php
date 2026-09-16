@@ -831,7 +831,7 @@
                             <td>
                                 @if($course->price)
                                     <span class="price-cell">
-                                        {{ number_format($course->price) }} ج.م
+                                        {{ number_format($course->price) }} ل.س
                                     </span>
                                 @else
                                     <span style="color: #adb5bd;">-</span>

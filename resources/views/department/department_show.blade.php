@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="{{ asset('assests/css/bootstrap.min.css') }}">
-<script src="{{ asset('assests/js/bootstrap.bundle.min.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+<script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 
 <table class="table">
     <thead class="thead-dark">
@@ -26,4 +26,4 @@
 
 
 
-<script src="{{ asset('assests/js/jquery-3.7.1.js') }}"></script>
+<script src="{{ asset('assets/js/jquery-3.7.1.js') }}"></script>

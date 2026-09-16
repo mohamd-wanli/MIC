@@ -53,7 +53,7 @@
                 @endforeach
                 <div class="summary-card" style="background:linear-gradient(135deg,#667eea,#764ba2); color:#fff;">
                     <div class="num" style="color:#fff;">{{ number_format($payments->sum('payment_value')) }}</div>
-                    <div class="lbl" style="color:rgba(255,255,255,.9);">الإجمالي العام (ج.م)</div>
+                    <div class="lbl" style="color:rgba(255,255,255,.9);">الإجمالي العام (ل.س)</div>
                 </div>
             </div>
 
@@ -84,7 +84,7 @@
                                 <td>{{ $p->collected_at ? $p->collected_at->format('Y-m-d') : '—' }}</td>
                                 <td>{{ $p->student->fullname ?? '—' }}</td>
                                 <td>{{ $p->course->subject_name ?? '—' }}</td>
-                                <td><strong>{{ number_format($p->payment_value) }} ج.م</strong></td>
+                                <td><strong>{{ number_format($p->payment_value) }} ل.س</strong></td>
                                 <td>{{ $p->department->name ?? '—' }}</td>
                                 <td>{{ $p->enteredBy->name ?? '—' }}</td>
                                 <td>

@@ -687,7 +687,7 @@
                         <div class="info-icon"><i class="fas fa-dollar-sign"></i></div>
                         <div class="info-content">
                             <span class="info-label">السعر</span>
-                            <span class="info-value">{{ $course->price ? number_format($course->price) . ' ج.م' : '—' }}</span>
+                            <span class="info-value">{{ $course->price ? number_format($course->price) . ' ل.س' : '—' }}</span>
                         </div>
                     </div>
                     <div class="info-item">

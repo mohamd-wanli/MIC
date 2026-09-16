@@ -41,7 +41,7 @@
             <div>عدد الإيصالات</div>
         </div>
         <div>
-            <div class="num"><?php echo e(number_format($payments->sum('payment_value'))); ?> ج.م</div>
+            <div class="num"><?php echo e(number_format($payments->sum('payment_value'))); ?> ل.س</div>
             <div>الإجمالي</div>
         </div>
     </div>
@@ -53,9 +53,12 @@
                 <th>رقم الوصل</th>
                 
                 <th>الطالب</th>
-                <th>الدورة</th>
+                   <th>الدورة</th>
+                 <th>رقم الدورة</th>
                 <th>المبلغ</th>
-                <th>القسم</th>
+                <th>الحسم</th>
+                <th>نوع الدفعة</th>
+
                 <?php if(isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at): ?>
                     <th>تاريخ التسليم</th>
                 <?php endif; ?>
@@ -67,10 +70,12 @@
                     <td><?php echo e($i + 1); ?></td>
                     <td><?php echo e($p->receipt_number ?? '—'); ?></td>
                     
-                    <td><?php echo e($p->student->fullname ?? '—'); ?></td>
+                      <td><?php echo e($p->student->fullname ?? '—'); ?></td>
                     <td><?php echo e($p->course->subject_name ?? '—'); ?></td>
-                    <td><?php echo e(number_format($p->payment_value)); ?> ج.م</td>
-                    <td><?php echo e($p->department->name ?? '—'); ?></td>
+                   <td><?php echo e($p->course->coursenumber ?? '—'); ?></td>
+                    <td><?php echo e(number_format($p->payment_value)); ?> ل.س</td>
+                    <td><?php echo e($p->discount); ?></td>
+                    <td><?php echo e($p->payment_category); ?></td>
                     <?php if(isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at): ?>
                         <td><?php echo e($p->surrendered_at ? $p->surrendered_at->format('Y-m-d H:i') : '—'); ?></td>
                     <?php endif; ?>
@@ -80,7 +85,7 @@
         <tfoot>
             <tr>
                 <td colspan="5">الإجمالي</td>
-                <td><?php echo e(number_format($payments->sum('payment_value'))); ?> ج.م</td>
+                <td><?php echo e(number_format($payments->sum('payment_value'))); ?> ل.س</td>
                 <td colspan="<?php echo e(isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at ? 2 : 1); ?>"></td>
             </tr>
         </tfoot>

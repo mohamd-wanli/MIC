@@ -176,7 +176,7 @@
                             <span>تسليم الإيصالات</span>
                         </a>
                     </li>
-
+{{-- 
                     @can('تقرير التحصيل اليومي')
                         <li>
                             <a href="{{ route('payments.reports.collections') }}"
@@ -185,7 +185,7 @@
                                 <span>تقرير التحصيل اليومي</span>
                             </a>
                         </li>
-                    @endcan
+                    @endcan --}}
 
                     <li>
                         <a href="{{ route('payments.reports.handovers') }}"

@@ -125,7 +125,7 @@
         <!-- Main Info Table -->
         <table class="main-table">
            <tr>
-    <td colspan="6" style="text-align:center padding: 10px;">
+    <td colspan="6" style="text-align:center; padding: 10px;">
         @if(isset($student->extraStudent) && $student->extraStudent->gender == 'ذكر')
             السيد :
         @elseif(isset($student->extraStudent) && $student->extraStudent->gender == 'أنثى')
@@ -134,7 +134,8 @@
             السيد/ة :
         @endif
         <strong>{{ $student->fullname ?? '-' }}</strong>
-        &nbsp;&nbsp;—&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
         @if(isset($student->extraStudent) && $student->extraStudent->gender == 'ذكر')
             Mr.
         @elseif(isset($student->extraStudent) && $student->extraStudent->gender == 'أنثى')
@@ -215,7 +216,7 @@
         </table>
 
         <!-- Overall Dates -->
-       <!-- Overall Dates -->
+       {{-- <!-- Overall Dates -->
 <table class="inner-table" style="margin-top: 15px;">
     <tr>
         <th style="width:50%;">تاريخ البداية الكلي</th>
@@ -225,7 +226,7 @@
         <td>{{ $course->start_date ?? '-' }}</td>
         <td>{{ $course->end_date ?? '-' }}</td>
     </tr>
-</table>
+</table> --}}
 
         <!-- Student Signature -->
         <div class="section">

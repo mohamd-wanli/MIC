@@ -66,7 +66,22 @@ if ($paymentValue <= 0 && $discount <= 0) {
             ], 500);
         }
     }
-
+  public function deletePayment(int $id)
+{
+    try {
+        $result = $this->paymentService->delete($id);
+        return response()->json(['success' => $result]);
+    } catch (\Throwable $e) {
+        Log::error('Delete payment failed: '.$e->getMessage(), [
+            'id' => $id,
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+}
 
     /**
      * Get remaining balance for a student/course

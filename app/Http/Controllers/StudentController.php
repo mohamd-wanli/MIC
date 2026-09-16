@@ -110,10 +110,7 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
     ]);
 }
 
-public function create2()
-    {
-        return view('create');
-    }
+
     public function profilePdf(int $studentId,int  $courseId)
     {
         $student = Student::with([
@@ -122,12 +119,12 @@ public function create2()
                 $q->where('courses.id', $courseId);
             }
         ])->findOrFail($studentId);
-//        return $student;
+            //  return $student;
         $course = $student->courses->firstOrFail();
           // Mark as printed (update the pivot)
-   $print= $student->courses()->updateExistingPivot($courseId, [
+      $print= $student->courses()->updateExistingPivot($courseId, [
         'printed_at' => now()
-    ]);
+      ]);
 
 
 
@@ -209,7 +206,10 @@ public function create2()
         'birth_date'               => $request->birth_date,
     ]);
 
-    return redirect()->route('student.index')->with('success', 'تم إضافة الطالب بنجاح');
+    // return redirect()->route('student.index')->with('success', 'تم إضافة الطالب بنجاح');
+    return redirect()
+    ->route('student.show', $student->id)
+    ->with('success', 'تم إضافة الطالب بنجاح. يمكنك الآن إضافة الدورات والمدفوعات من نفس الصفحة.');
 }
 
     public function store2(Request $request)

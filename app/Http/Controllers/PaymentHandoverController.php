@@ -20,32 +20,74 @@ class PaymentHandoverController extends Controller
     /**
      * AJAX: search pending payments by receipt range.
      */
+    // public function search(Request $request)
+    // {
+    //     $from = $request->input('receipt_from');
+    //     $to   = $request->input('receipt_to');
+
+    //     $query = Payment::pending()
+    //         ->with(['student', 'course', 'department', 'enteredBy']);
+
+
+    //     if (auth()->user()->department_id && !auth()->user()->hasRole('Admin')) {
+    //         $query->where('department_id', auth()->user()->department_id);
+    //     }
+
+    //     if ($from && $to) {
+    //         $query->whereBetween('receipt_number', [$from, $to]);
+    //     }
+
+    //     $payments = $query->orderBy('receipt_number')->get();
+
+    //     return response()->json([
+    //         'success'  => true,
+    //         'payments' => $payments,
+    //         'total'    => $payments->sum('payment_value'),
+    //         'count'    => $payments->count(),
+    //     ]);
+    // }
     public function search(Request $request)
-    {
-        $from = $request->input('receipt_from');
-        $to   = $request->input('receipt_to');
+{
+    $from = trim((string) $request->input('receipt_from', ''));
+    $to   = trim((string) $request->input('receipt_to', ''));
 
-        $query = Payment::pending()
-            ->with(['student', 'course', 'department', 'enteredBy']);
-
-
-        if (auth()->user()->department_id && !auth()->user()->hasRole('Admin')) {
-            $query->where('department_id', auth()->user()->department_id);
-        }
-
-        if ($from && $to) {
-            $query->whereBetween('receipt_number', [$from, $to]);
-        }
-
-        $payments = $query->orderBy('receipt_number')->get();
-
+    if ($from === '' && $to === '') {
         return response()->json([
-            'success'  => true,
-            'payments' => $payments,
-            'total'    => $payments->sum('payment_value'),
-            'count'    => $payments->count(),
-        ]);
+            'success'  => false,
+            'message'  => 'يرجى إدخال رقم واحد على الأقل',
+            'payments' => [],
+        ], 422);
     }
+
+    $query = Payment::pending()
+        ->with(['student', 'course', 'department', 'enteredBy']);
+
+    // Department scope
+    if (auth()->user()->department_id && !auth()->user()->hasRole('Admin')) {
+        $query->where('department_id', auth()->user()->department_id);
+    }
+
+    // Numeric comparison to avoid string sort bugs
+    if ($from !== '' && $to !== '') {
+        $query->whereRaw('CAST(receipt_number AS UNSIGNED) BETWEEN ? AND ?', [
+            (int) $from,
+            (int) $to,
+        ]);
+    } elseif ($from !== '') {
+        $query->whereRaw('CAST(receipt_number AS UNSIGNED) >= ?', [(int) $from]);
+    } elseif ($to !== '') {
+        $query->whereRaw('CAST(receipt_number AS UNSIGNED) <= ?', [(int) $to]);
+    }
+
+    $payments = $query->orderByRaw('CAST(receipt_number AS UNSIGNED) ASC')->get();
+
+    return response()->json([
+        'success'  => true,
+        'payments' => $payments,
+        'total'    => $payments->sum('payment_value'),
+        'count'    => $payments->count(),
+    ]);
+}
 
     /**
      * Surrender selected payments.
@@ -237,7 +279,7 @@ class PaymentHandoverController extends Controller
         $title    = 'تقرير التحصيل اليومي';
         $subtitle = "من {$from} إلى {$to}";
 
-        return view('payments.reports.print_document_collection',
+        return view('payments.reports.print_collection',
             compact('payments', 'title', 'subtitle'));
     }
 

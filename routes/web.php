@@ -277,7 +277,7 @@ Route::get('/get-department-roles/{department}', function ($departmentId) {
 });
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::post('/store', [PaymentController::class, 'store'])->name('store');
-    Route::delete('/delete/{id}', [PaymentController::class, 'destroy'])->name('destroy');
+    Route::delete('/delete/{id}', [PaymentController::class, 'deletePayment'])->name('destroy');
     Route::get('/summary/{studentId}', [PaymentController::class, 'summary'])->name('summary');
 });
 

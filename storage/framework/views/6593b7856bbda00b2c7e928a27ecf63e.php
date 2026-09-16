@@ -44,6 +44,20 @@
                    target="_blank" class="btn-print">
                     <i class="fas fa-print"></i> طباعة
                 </a>
+               <a href="<?php echo e(route('payments.reports.collections.print', request()->all())); ?>"
+   target="_blank"
+   class="btn-print"
+   style="background:linear-gradient(135deg,#667eea,#764ba2);
+          padding: 3px 8px;
+          font-size: 10px;
+          height: 12px;
+          line-height: 18px;
+          border-radius: 5px;
+          gap: 3px;">
+    <i class="fas fa-cash-register" style="font-size:9px;"></i>
+
+</a>
+
             </form>
 
             
@@ -54,7 +68,7 @@
                 </div>
                 <div class="summary-card">
                     <div class="num"><?php echo e(number_format($payments->sum('payment_value'))); ?></div>
-                    <div class="lbl">الإجمالي المسلّم (ج.م)</div>
+                    <div class="lbl">الإجمالي المسلّم (ل.س)</div>
                 </div>
                 <div class="summary-card">
                     <div class="num"><?php echo e($daily->count()); ?></div>
@@ -85,7 +99,7 @@
                                 <td><strong style="color:#667eea;"><?php echo e($p->receipt_number ?? '—'); ?></strong></td>
                                 <td><?php echo e($p->student->fullname ?? '—'); ?></td>
                                 <td><?php echo e($p->course->subject_name ?? '—'); ?></td>
-                                <td><strong><?php echo e(number_format($p->payment_value)); ?> ج.م</strong></td>
+                                <td><strong><?php echo e(number_format($p->payment_value)); ?> ل.س</strong></td>
                                 <td><?php echo e($p->collected_at ? $p->collected_at->format('Y-m-d') : '—'); ?></td>
                                 <td><?php echo e($p->surrenderedTo->name ?? '—'); ?></td>
                             </tr>
@@ -99,7 +113,7 @@
                     <tfoot>
                         <tr style="background:#f8faff; font-weight:700;">
                             <td colspan="5">الإجمالي</td>
-                            <td><?php echo e(number_format($payments->sum('payment_value'))); ?> ج.م</td>
+                            <td><?php echo e(number_format($payments->sum('payment_value'))); ?> ل.س</td>
                             <td colspan="2"></td>
                         </tr>
                     </tfoot>

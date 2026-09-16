@@ -95,7 +95,7 @@
                     <div>
                         <strong>عدد الإيصالات المحددة: <span id="selectedCount">0</span></strong>
                         &nbsp;|&nbsp;
-                        <strong>الإجمالي: <span id="selectedTotal">0</span> ج.م</strong>
+                        <strong>الإجمالي: <span id="selectedTotal">0</span> ل.س</strong>
                     </div>
                     <div>
                         <button class="btn-surrender" id="btnSurrender" disabled>
@@ -115,7 +115,7 @@
 </div>
 @endsection
 
-@section('js')
+{{-- @section('js')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td><strong style="color:#667eea;">${p.receipt_number}</strong></td>
                 <td>${p.student ? p.student.fullname : '—'}</td>
                 <td>${p.course ? p.course.subject_name : '—'}</td>
-                <td><strong>${Number(p.payment_value).toLocaleString()} ج.م</strong></td>
+                <td><strong>${Number(p.payment_value).toLocaleString()} ل.س</strong></td>
                 <td>${p.collected_at ? p.collected_at.substring(0,10) : '—'}</td>
                 <td>${p.entered_by ? p.entered_by.name : '—'}</td>
             `;
@@ -233,6 +233,220 @@ document.addEventListener('DOMContentLoaded', function () {
             btnSurrender.innerHTML = '<i class="fas fa-check"></i> تأكيد التسليم';
         });
     });
+
+});
+</script>
+@endsection --}}
+@section('js')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    var results        = [];
+    var resultsWrapper = document.getElementById('resultsWrapper');
+    var emptyState     = document.getElementById('emptyState');
+    var resultsBody    = document.getElementById('resultsBody');
+    var btnSearch      = document.getElementById('btnSearch');
+    var btnSurrender   = document.getElementById('btnSurrender');
+    var fromInput      = document.getElementById('receiptFrom');
+    var toInput        = document.getElementById('receiptTo');
+
+    // ============================================
+    // SEARCH
+    // ============================================
+    function runSearch() {
+        var from = fromInput.value.trim();
+        var to   = toInput.value.trim();
+
+        if (!from && !to) {
+            showToast('يرجى إدخال رقم واحد على الأقل', 'warning');
+            return;
+        }
+
+        // Show loading state
+        btnSearch.disabled = true;
+        btnSearch.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري البحث...';
+
+        emptyState.style.display = 'block';
+        emptyState.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size:3rem; display:block; margin-bottom:10px;"></i> جاري تحميل النتائج...';
+        resultsWrapper.style.display = 'none';
+
+        var params = new URLSearchParams();
+        if (from) params.append('receipt_from', from);
+        if (to)   params.append('receipt_to', to);
+
+        fetch("{{ route('payments.handover.search') }}?" + params.toString(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) {
+                showToast(data.message || 'حدث خطأ', 'danger');
+                results = [];
+                renderResults(true);
+                return;
+            }
+            results = data.payments || [];
+            renderResults(false);
+        })
+        .catch(err => {
+            console.error(err);
+            showToast('فشل البحث، حاول مرة أخرى', 'danger');
+            results = [];
+            renderResults(true);
+        })
+        .finally(() => {
+            btnSearch.disabled = false;
+            btnSearch.innerHTML = '<i class="fas fa-search"></i> بحث';
+        });
+    }
+
+    // ============================================
+    // ENTER KEY SUBMIT
+    // ============================================
+    fromInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') runSearch();
+    });
+    toInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') runSearch();
+    });
+
+    btnSearch.addEventListener('click', runSearch);
+
+    // ============================================
+    // RENDER RESULTS
+    // ============================================
+    function renderResults(isError) {
+        if (results.length === 0) {
+            resultsWrapper.style.display = 'none';
+            emptyState.style.display = 'block';
+            emptyState.innerHTML = isError
+                ? '<i class="fas fa-exclamation-triangle" style="font-size:3rem; display:block; margin-bottom:10px; color:#f7971e;"></i> حدث خطأ أثناء البحث'
+                : '<i class="fas fa-info-circle" style="font-size:3rem; display:block; margin-bottom:10px;"></i> لا توجد إيصالات في هذا النطاق';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+        resultsBody.innerHTML = '';
+
+        results.forEach(function (p) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="checkbox" class="chk-row" value="${p.id}"></td>
+                <td><strong style="color:#667eea;">${p.receipt_number ?? '—'}</strong></td>
+                <td>${p.student ? p.student.fullname : '—'}</td>
+                <td>${p.course ? p.course.subject_name : '—'}</td>
+                <td><strong>${Number(p.payment_value).toLocaleString()} ل.س</strong></td>
+                <td>${p.collected_at ? p.collected_at.substring(0,10) : '—'}</td>
+                <td>${p.entered_by ? p.entered_by.name : '—'}</td>
+            `;
+            resultsBody.appendChild(tr);
+        });
+
+        resultsWrapper.style.display = 'block';
+
+        document.querySelectorAll('.chk-row').forEach(function (cb) {
+            cb.addEventListener('change', updateSummary);
+        });
+
+        // Reset checkAll
+        var checkAll = document.getElementById('checkAll');
+        checkAll.checked = false;
+        checkAll.addEventListener('change', function () {
+            document.querySelectorAll('.chk-row').forEach(cb => cb.checked = this.checked);
+            updateSummary();
+        });
+
+        updateSummary();
+    }
+
+    // ============================================
+    // UPDATE SUMMARY
+    // ============================================
+    function updateSummary() {
+        var selected = Array.from(document.querySelectorAll('.chk-row:checked'));
+        document.getElementById('selectedCount').textContent = selected.length;
+
+        var total = selected.reduce(function (sum, cb) {
+            var p = results.find(x => x.id == cb.value);
+            return sum + (p ? parseFloat(p.payment_value) : 0);
+        }, 0);
+
+        document.getElementById('selectedTotal').textContent = total.toLocaleString();
+        btnSurrender.disabled = selected.length === 0;
+    }
+
+    // ============================================
+    // SURRENDER
+    // ============================================
+    btnSurrender.addEventListener('click', function () {
+        var ids = Array.from(document.querySelectorAll('.chk-row:checked')).map(cb => cb.value);
+
+        if (!confirm('هل أنت متأكد من تسليم ' + ids.length + ' إيصالاً؟')) return;
+
+        btnSurrender.disabled = true;
+        btnSurrender.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسليم...';
+
+        fetch("{{ route('payments.handover.surrender') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ payment_ids: ids })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => location.reload(), 900);
+            } else {
+                showToast(data.message, 'danger');
+                btnSurrender.disabled = false;
+                btnSurrender.innerHTML = '<i class="fas fa-check"></i> تأكيد التسليم';
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast('فشل التسليم، حاول مرة أخرى', 'danger');
+            btnSurrender.disabled = false;
+            btnSurrender.innerHTML = '<i class="fas fa-check"></i> تأكيد التسليم';
+        });
+    });
+
+    // ============================================
+    // TOAST NOTIFICATION
+    // ============================================
+    function showToast(message, type) {
+        var colors = {
+            success: '#28a745',
+            danger: '#dc3545',
+            warning: '#ffc107',
+        };
+        var icons = {
+            success: 'fa-check-circle',
+            danger: 'fa-times-circle',
+            warning: 'fa-exclamation-triangle',
+        };
+
+        var el = document.createElement('div');
+        el.style.cssText = `
+            position:fixed; top:20px; left:50%; transform:translateX(-50%);
+            background:${colors[type] || '#333'}; color:#fff;
+            padding:12px 24px; border-radius:50px; font-weight:600;
+            box-shadow:0 6px 25px rgba(0,0,0,.2); z-index:9999;
+            display:flex; align-items:center; gap:10px; font-size:.9rem;
+            opacity:0; transition:opacity .3s;
+        `;
+        el.innerHTML = `<i class="fas ${icons[type] || 'fa-info-circle'}"></i> ${message}`;
+        document.body.appendChild(el);
+
+        setTimeout(() => el.style.opacity = '1', 10);
+        setTimeout(() => {
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 300);
+        }, 2500);
+    }
 
 });
 </script>

@@ -1,7 +1,7 @@
 <tr id="payment-row-{{ $payment->id }}">
     <td>{{ $paymentCount ?? 1 }}</td>
     <td>{{ $payment->course->subject_name ?? '—' }}</td>
-    <td><strong>{{ number_format($payment->payment_value) }} ج.م</strong></td>
+    <td><strong>{{ number_format($payment->payment_value) }} ل.س</strong></td>
     <td>
         <span class="status-badge info">
             @switch($payment->payment_type)

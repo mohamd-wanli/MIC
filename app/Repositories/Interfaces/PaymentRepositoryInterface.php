@@ -15,4 +15,6 @@ public function getPendingPayments(array $filters = []): \Illuminate\Support\Col
 public function surrenderPayments(array $ids, int $userId): int;
 public function getTotalPending(?int $departmentId = null): float;
 public function getTotalDiscountsByStudentAndCourse(int $studentId, int $courseId): float;
+
 }
+

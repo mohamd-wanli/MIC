@@ -642,10 +642,7 @@
                         ويرغبون بالحصول على شهادات بقوائم مدمجة، علماً بأننا وافيناكم
                         بصورة عن القوائم بشكل متفرق مسبقاً.
                     </p>
-                    <p style="font-weight: bold; font-size: 16px; color: #667eea;">
-                        رقم المجموعة: <?php echo e(request('group_number')); ?>
-
-                    </p>
+                    
                 </div>
 
                 <!-- ===== TABLE ===== -->
@@ -690,7 +687,7 @@
                                     </td>
                                     <td><?php echo e($student->start_date ?? '—'); ?></td>
                                     <td><?php echo e($student->end_date ?? '—'); ?></td>
-                                    <td><?php echo e($student->teacher_name ?? '—'); ?></td>
+                                    <td><?php echo e($student->teacherName ?? '—'); ?></td>
                                     <td>
                                         <?php if($student->certificate_number): ?>
                                             <span class="cert-number"><?php echo e($student->certificate_number); ?></span>

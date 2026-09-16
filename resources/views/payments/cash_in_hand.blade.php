@@ -19,7 +19,7 @@
                     <tr>
                         <th>القسم</th>
                         <th>عدد الإيصالات</th>
-                        <th>الإجمالي (ج.م)</th>
+                        <th>الإجمالي (ل.س)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,7 +27,7 @@
                         <tr>
                             <td>{{ $row->department->name ?? 'غير محدد' }}</td>
                             <td>{{ $row->receipts_count }}</td>
-                            <td><strong>{{ number_format($row->total_amount) }} ج.م</strong></td>
+                            <td><strong>{{ number_format($row->total_amount) }} ل.س</strong></td>
                         </tr>
                     @empty
                         <tr>

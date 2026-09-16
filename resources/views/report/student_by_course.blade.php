@@ -602,14 +602,14 @@
                        target="_blank"
                        class="btn-print-modern btn-success">
                         <i class="fas fa-print"></i>
-                        طباعة التقرير
+                        طباعة كشف حضور
                     </a>
 
                     <a href="{{ route('print', request()->all()) }}"
                        target="_blank"
                        class="btn-print-modern btn-warning">
                         <i class="fas fa-print"></i>
-                        طباعة بدون X
+                        طباعة ذاتية الدورة
                     </a>
 
                     <a href="{{ route('financial.report', request()->all()) }}"

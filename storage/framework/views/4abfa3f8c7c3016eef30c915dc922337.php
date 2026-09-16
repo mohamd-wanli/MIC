@@ -47,7 +47,7 @@
                                         </span>
                                     </td>
                                  <td>
-    <?php if($user->roles->isNotEmpty()): ?> 
+    <?php if($user->roles->isNotEmpty()): ?>
         <?php $__currentLoopData = $user->roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <span class="badge badge-success" style="color: black"><?php echo e($role->name); ?></span>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -61,10 +61,10 @@
                                         <?php endif; ?>
 
                                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('حذف مستخدم')): ?>
-                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" 
+                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
                                                     data-bs-target="#modaldemo8"
-                                                    data-user_id="<?php echo e($user->id); ?>" 
-                                                    data-username="<?php echo e($user->name); ?>" 
+                                                    data-user_id="<?php echo e($user->id); ?>"
+                                                    data-username="<?php echo e($user->name); ?>"
                                                     title="حذف">
                                                 <i class="las la-trash">حذف</i>
                                             </button>

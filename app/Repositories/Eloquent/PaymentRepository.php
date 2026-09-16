@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;;
 use App\Models\Payment;
 use App\Repositories\Interfaces\PaymentRepositoryInterface as InterfacesPaymentRepositoryInterface;
 use Illuminate\Support\Collection;
+use Override;
 use PaymentRepositoryInterface;
 
 class PaymentRepository implements InterfacesPaymentRepositoryInterface {
@@ -144,4 +145,6 @@ public function getTotalDiscountsByStudentAndCourse(int $studentId, int $courseI
         ->where('course_id', $courseId)
         ->sum('discount');
 }
+
+
 }

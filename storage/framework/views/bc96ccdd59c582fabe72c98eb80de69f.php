@@ -834,7 +834,7 @@
                             <td>
                                 <?php if($course->price): ?>
                                     <span class="price-cell">
-                                        <?php echo e(number_format($course->price)); ?> ج.م
+                                        <?php echo e(number_format($course->price)); ?> ل.س
                                     </span>
                                 <?php else: ?>
                                     <span style="color: #adb5bd;">-</span>
@@ -986,4 +986,5 @@
     });
 </script>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\wanli\Desktop\mic\resources\views/course/completed.blade.php ENDPATH**/ ?>

@@ -409,8 +409,10 @@ public function update(Request $request,int $id)
         // }
            $subject = Subject::find($request->subjectcourse);
 
-         $exists=Course::where('coursenumber',$request->coursenumber)
-          ->where('subject_id',$subject->id)->exists();
+        $exists = Course::where('coursenumber', $request->coursenumber)
+    ->where('subject_id', $subject->id)
+    ->where('id', '!=', $course->id)   
+    ->exists();
           if($exists){
             return redirect()->back()->with('error', 'رقم الدورة موجود مسبقاً لنفس المادة');
           }
@@ -654,6 +656,7 @@ public function showGroupReport(Request $request)
             ->join('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->join('stucourse', 'stucourse.student_id', '=', 'students.id')
             ->join('courses', 'stucourse.course_id', '=', 'courses.id')
+            ->join('teachers', 'teachers.id', '=', 'courses.teacher_id')
             ->select(
                 'students.id',
                 'students.fullname',
@@ -668,7 +671,10 @@ public function showGroupReport(Request $request)
                 'courses.start_date',
                 'courses.end_date',
                 'courses.coursenumber',
-                'courses.teacher_name',
+                // 'courses.teacher_name',
+                DB::raw("(SELECT TRIM(CONCAT(name ,' ',lastname))
+                FROM teachers WHERE teachers.id = courses.teacher_id
+                ) as teacherName"),
                 'stucourse.certificate_number',
                 'stucourse.page_number',
             )

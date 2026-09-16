@@ -220,6 +220,7 @@
         <th>اسم الأم</th>
         <th>الرقم الوطني</th>
         <th>تاريخ ومكان الولادة</th>
+        <th>المستوى الثقافي</th>
         <th>رقم الهاتف</th>
         <th>الجوال</th>
         <th>عنوان السكن</th>
@@ -238,6 +239,7 @@
             <td><?php echo e($student->Extrastudent->mothername ?? '-'); ?></td>
             <td><?php echo e($student->national_number ?? '-'); ?></td>
             <td><?php echo e($student->Extrastudent->date_of_birth ?? '-'); ?></td>
+            <td><?php echo e($student->Extrastudent->cultural_level); ?></td>
             <td><?php echo e($student->Extrastudent->telephone ?? '-'); ?></td>
             <td><?php echo e($student->Extrastudent->mobile ?? '-'); ?></td>
             <td><?php echo e($student->Extrastudent->address ?? '-'); ?></td>

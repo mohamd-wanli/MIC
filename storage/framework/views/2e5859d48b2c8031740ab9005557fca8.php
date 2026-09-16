@@ -807,7 +807,7 @@
                 </span>
             </div>
             <div class="stat-number" data-counter="<?php echo e($totalPayments ?? 0); ?>" data-format="1">0</div>
-            <div class="stat-label">إجمالي المدفوعات (ج.م)</div>
+            <div class="stat-label">إجمالي المدفوعات (ل.س)</div>
         </div>
     </div>
 
@@ -979,7 +979,7 @@
                                 </div>
                                 <div class="activity-content">
                                     <div class="activity-title">
-                                        <span class="payment-amount"><?php echo e(number_format($payment->payment_value)); ?> ج.م</span>
+                                        <span class="payment-amount"><?php echo e(number_format($payment->payment_value)); ?> ل.س</span>
                                         — <?php echo e($payment->student->fullname ?? 'غير معروف'); ?>
 
                                     </div>

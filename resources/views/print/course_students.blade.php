@@ -24,7 +24,7 @@
   }
   /* Excel-style default gridlines: thin, light gray */
   td, th {
-    border: 1px solid #b7b7b7;
+    border: 1px solid #555555;
     text-align: center;
     vertical-align: middle;
     font-size: 12px;
@@ -39,7 +39,7 @@
     font-size: 13px;
     height: 30px;
     background: #f2f2f2;
-    border: 1px solid #8c8c8c;
+    border: 1px solid #333333;
   }
 
   /* ===== Main grid ===== */
@@ -47,29 +47,58 @@
   .main-table td, .main-table th {
     height: 24px;
     min-width: 22px;
-    border: 1px solid #b7b7b7;
+    border: 1px solid #555555;
   }
   .main-table thead th {
     background: #dce6f1; /* excel-like header blue */
     font-weight: bold;
-    border: 1px solid #8c8c8c;
+    border: 1px solid #333333;
   }
   .col-name { min-width: 110px; font-weight: bold; text-align: right; padding-right: 6px; }
   .col-id { min-width: 55px; font-weight: bold; }
   .col-lecnum { min-width: 20px; font-size: 10px; }
 
-  /* Day header numbers: no vertical dividers between them, only a bottom rule */
+  /* Day header numbers: each number now gets its own vertical divider */
   .col-day {
-    min-width: 20px;
+    min-width: 32px;          /* wider to match date cells */
     font-size: 10px;
-    border-top: 1px solid #8c8c8c;
-    border-bottom: 1px solid #8c8c8c;
-    border-left: none;
-    border-right: none;
+    border-top: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #555555;
+    border-right: 1px solid #555555;
   }
-  /* keep an outer frame around the whole day-number block */
-  .col-day:first-child { border-right: 1px solid #8c8c8c; }
-  .col-day:last-child { border-left: 1px solid #8c8c8c; }
+  /* keep a slightly stronger outer frame around the whole day-number block */
+  .col-day:first-child { border-right: 1px solid #333333; }
+  .col-day:last-child { border-left: 1px solid #333333; }
+
+  /* ===== Date row (writable cells with a middle line) ===== */
+  .date-row .date-label {
+    font-weight: bold;
+    border: 1px solid #333333;
+  }
+  .date-cell {
+    min-width: 32px;          /* wider */
+     height: 60px !important;           /* taller */
+    font-size: 11px;
+    font-weight: normal;
+    background: #fff;
+    padding: 1px 2px;         /* tighter padding for more writing space */
+    border-top: 1px solid #333333;
+    border-bottom: 1px solid #555555;
+    border-left: 1px solid #555555;
+    border-right: 1px solid #555555;
+    position: relative;       /* needed for the middle line */
+  }
+  /* the horizontal line that splits each date cell into two */
+  .date-cell::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px solid #555555;
+    pointer-events: none;
+  }
 
   .vertical-text {
     writing-mode: vertical-rl;
@@ -97,7 +126,7 @@
     text-align: right;
     font-size: 12px;
     height: 30px;
-    border: 1px solid #b7b7b7;
+    border: 1px solid #555555;
   }
   .label-cell { font-weight: bold; white-space: nowrap; }
   .filler-cell { border-left: none; border-right: none; }
@@ -111,7 +140,7 @@
     font-weight: bold;
     vertical-align: top;
     padding: 6px;
-    border: 1px solid #b7b7b7;
+    border: 1px solid #555555;
   }
 
   .session-duration-wrap {
@@ -120,15 +149,74 @@
     margin-top: 10px;
   }
   .session-duration-box {
-    border: 1px solid #8c8c8c;
+    border: 1px solid #333333;
     background: #f2f2f2;
     font-weight: bold;
     font-size: 13px;
     padding: 5px 12px;
   }
+  .grade{ min-width: 110px; font-weight: bold; text-align: right; padding-right: 6px; }
+
+  /* Force browsers to actually print background colors */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  @media print {
+    body {
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .sheet {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 5px !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    @page {
+        size: A4 landscape;
+        margin: 8mm;
+    }
+    table {
+        page-break-inside: auto;
+    }
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    thead {
+        display: table-header-group; /* repeat header on each page */
+    }
+    .session-duration-wrap {
+        page-break-inside: avoid;
+    }
+}
 </style>
 </head>
 <body>
+    <div class="no-print" style="text-align:center; margin-bottom:15px;">
+    <button onclick="window.print()" style="
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color:#fff; border:none; padding:10px 30px;
+        border-radius:50px; font-size:14px; font-weight:600;
+        cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.3);
+    ">
+        🖨️ طباعة
+    </button>
+    <button onclick="window.close()" style="
+        background:#e9e9e9; color:#333; border:none; padding:10px 30px;
+        border-radius:50px; font-size:14px; font-weight:600;
+        cursor:pointer; margin-right:10px;
+    ">
+        ✖ إغلاق
+    </button>
+</div>
 <div class="sheet">
 
   <!-- ============ TOP META BAR ============ -->
@@ -149,25 +237,32 @@
     <colgroup>
       <col style="width:110px;">
       <col style="width:55px;">
-      <col span="8" style="width:22px;">
-      <col span="30" style="width:20px;">
+      <col span="4" style="width:22px;">
+      <col span="30" style="width:32px;">  <!-- wider day columns -->
     </colgroup>
     <thead>
-      <tr>
+      <!-- ===== ROW 1 : date row with split cells ===== -->
+      <tr class="date-row">
         <th rowspan="2" class="col-name">اسم الطالب</th>
         <th rowspan="2" class="col-id">الرقم</th>
-        <th colspan="8">رقم المحاضرة :</th>
-        <th colspan="30">الأيام</th>
+        <th colspan="4" class="date-label">التاريخ:</th>
+
+        <th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th>
+        <th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th>
+        <th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th>
+        <th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th>
+        <th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th>
+        <th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th><th class="date-cell"></th>
+
+        <th rowspan="2" class="grade" style="width:10px;">التقدير</th>
       </tr>
+
+      <!-- ===== ROW 2 : lecture numbers ===== -->
       <tr>
         <th class="vertical-text">دفعة1</th>
         <th class="vertical-text">دفعة2</th>
         <th class="vertical-text">دفعة3</th>
-        {{-- remaining lecture-number columns --}}
-        <th class="col-lecnum"></th>
-        <th class="col-lecnum"></th>
-        <th class="col-lecnum"></th>
-        <th class="col-lecnum"></th>
+        {{-- single remaining lecture-number column --}}
         <th class="col-lecnum"></th>
 
         <th class="col-day">1</th><th class="col-day">2</th><th class="col-day">3</th><th class="col-day">4</th>
@@ -178,30 +273,38 @@
         <th class="col-day">21</th><th class="col-day">22</th><th class="col-day">23</th><th class="col-day">24</th>
         <th class="col-day">25</th><th class="col-day">26</th><th class="col-day">27</th><th class="col-day">28</th>
         <th class="col-day">29</th><th class="col-day">30</th>
+
       </tr>
     </thead>
     <tbody>
       @foreach($course->students as $student)
       <tr>
         <td class="col-name">{{ $student->fullname }}</td>
-        <td class="col-id">{{ $student->id }}</td> {{-- Dynamic ID from the student model --}}
-        <td colspan="8"></td>
-        <td colspan="30"></td>
+        <td class="col-id">{{ $student->id }}</td>
+         <td></td><td></td><td></td><td></td>
+
+        {{-- 30 day columns --}}
+        @for($d = 0; $d < 30; $d++)<td></td>@endfor
+        {{-- grade column --}}
+        <td></td>
       </tr>
       @endforeach
 
-      {{-- Teacher's daily attendance sign-off row, right under the last student --}}
+      {{-- Teacher's daily attendance sign-off row --}}
       <tr class="sign-row">
         <td class="col-name" colspan="2">توقيع المدرس اليومي للحصص</td>
-        <td colspan="8"></td>
-        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-        <td></td><td></td><td></td><td></td><td></td><td></td>
+        <td></td><td></td><td></td><td></td>
+
+        @for($d = 0; $d < 30; $d++)<td></td>@endfor
+        <td></td>
       </tr>
 
       <tr class="empty-row">
-        <td></td><td></td><td colspan="8"></td><td colspan="30"></td>
+        <td></td><td></td>
+         <td></td><td></td><td></td><td></td>
+
+        @for($d = 0; $d < 30; $d++)<td></td>@endfor
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -219,8 +322,8 @@
       <td class="label-cell">تاريخ الامتحان :</td>
     </tr>
     <tr>
-      <td class="label-cell">مدقق الأقساط والنتائج:<br>سمر ضاهر</td>
-      <td class="label-cell">المدرس : بشرى رجب</td>
+      <td class="label-cell">مدقق الأقساط والنتائج:<br></td>
+      <td class="label-cell">المدرس : </td>
     </tr>
     <tr>
       <td class="label-cell">التوقيع :</td>
@@ -250,15 +353,12 @@
     </tr>
   </table>
 
-  <!-- ============ SESSION DURATION (calculated from start_hour / end_hour) ============ -->
+  <!-- ============ SESSION DURATION ============ -->
   @php
     $start = \Carbon\Carbon::parse($course->start_hour);
     $end = \Carbon\Carbon::parse($course->end_hour);
 
-    // Compute from raw seconds and floor manually — diffInMinutes()/diffInHours()
-    // can round the underlying float (e.g. 90 min -> 1.5h -> rounds to 2h) depending
-    // on the Carbon version, so we avoid that entirely.
-    $diffInSeconds = $end->diffInSeconds($start, true); // true = absolute value
+    $diffInSeconds = $end->diffInSeconds($start, true);
     $totalMinutes  = intdiv($diffInSeconds, 60);
     $hours         = intdiv($totalMinutes, 60);
     $minutes       = $totalMinutes % 60;

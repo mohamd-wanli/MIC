@@ -158,7 +158,7 @@
 
     <div class="summary">
         <div class="item">عدد الدفعات: <span>{{ $totalPaymentCount }}</span></div>
-        <div class="item">المجموع الكلي: <span>{{ number_format($totalSum) }} ج.م</span></div>
+        <div class="item">المجموع الكلي: <span>{{ number_format($totalSum) }} ل.س</span></div>
         <div class="item">عدد الطلاب: <span>{{ count($reportData) }}</span></div>
     </div>
 
@@ -345,7 +345,7 @@
     {{-- Summary stats --}}
     <div class="summary">
         <div class="item">عدد الدفعات: <span>{{ $totalPaymentCount }}</span></div>
-        <div class="item">المجموع الكلي: <span>{{ number_format($totalSum) }} ج.م</span></div>
+                <div class="item">المجموع الكلي: <span>{{ number_format($totalSum) }} ل.س</span></div>
         <div class="item">عدد الطلاب: <span>{{ count($reportData) }}</span></div>
     </div>
 

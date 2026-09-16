@@ -47,7 +47,7 @@
                                         </span>
                                     </td>
                                  <td>
-    @if ($user->roles->isNotEmpty()) 
+    @if ($user->roles->isNotEmpty())
         @foreach ($user->roles as $role)
             <span class="badge badge-success" style="color: black">{{ $role->name }}</span>
         @endforeach
@@ -61,10 +61,10 @@
                                         @endcan
 
                                         @can('حذف مستخدم')
-                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" 
+                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
                                                     data-bs-target="#modaldemo8"
-                                                    data-user_id="{{ $user->id }}" 
-                                                    data-username="{{ $user->name }}" 
+                                                    data-user_id="{{ $user->id }}"
+                                                    data-username="{{ $user->name }}"
                                                     title="حذف">
                                                 <i class="las la-trash">حذف</i>
                                             </button>

@@ -644,9 +644,9 @@
                         ويرغبون بالحصول على شهادات بقوائم مدمجة، علماً بأننا وافيناكم
                         بصورة عن القوائم بشكل متفرق مسبقاً.
                     </p>
-                    <p style="font-weight: bold; font-size: 16px; color: #667eea;">
+                    {{-- <p style="font-weight: bold; font-size: 16px; color: #667eea;">
                         رقم المجموعة: {{ request('group_number') }}
-                    </p>
+                    </p> --}}
                 </div>
 
                 <!-- ===== TABLE ===== -->
@@ -689,7 +689,7 @@
                                     </td>
                                     <td>{{ $student->start_date ?? '—' }}</td>
                                     <td>{{ $student->end_date ?? '—' }}</td>
-                                    <td>{{ $student->teacher_name ?? '—' }}</td>
+                                    <td>{{ $student->teacherName ?? '—' }}</td>
                                     <td>
                                         @if($student->certificate_number)
                                             <span class="cert-number">{{ $student->certificate_number }}</span>

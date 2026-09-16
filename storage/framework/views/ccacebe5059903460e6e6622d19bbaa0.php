@@ -180,8 +180,8 @@
 function getBranchName(courseName) {
     const halabouniKeywords = [
         'حلاقة نسائية', 'تجميل', 'احترافي', 'تخصصي',
-        'تكنيك الوان الشعر', 'عناية بالبشرة', 'اكريليك', 'جل',
-        'رموش تجميليه', 'خياطه', 'القيادة الاداريه','سبورات','ادارة الأعمال'
+        'تكنيك الوان الشعر', 'عناية بالبشرة', 'اكريليك', 'جل','عناية بشرة',
+        'رموش تجميليه', 'خياطه', 'القيادة الاداريه','قيادة ادارية','سبورات','ادارة الأعمال','قيادة إدارية','قيادة إدارية','ادارة الاعمال','ادارة الأعمال','ادارة الاعمال','ادارة الأعمال','ادارة الاعمال','ادارة الأعمال'
     ];
 
     // تحويل اسم الدورة إلى نص للتأكد (وتوحيد حالة الأحرف اختياري)
@@ -240,7 +240,7 @@ function getBranchName(courseName) {
                     </tr>
                 </table>
                 <div style="float:left;">
-                    <img src="/images/logo.png" style="width:100px;">
+                    <img src="<?php echo e(asset('images/logo.png')); ?>" style="width:100px;">
                 </div>
             </div>
             <div style="text-align:center; margin:15px 0; clear:both;">
@@ -262,6 +262,8 @@ function getBranchName(courseName) {
                     <th style="padding:3px;">الاسم والشهرة</th>
                     <th style="padding:3px;">اسم الأب</th>
                     <th style="padding:3px;">اسم الأم</th>
+                    <th style="padding:3px;">رقم الموبايل</th>
+
                     <th style="padding:3px;">تاريخ الميلاد</th>
                     <th style="padding:3px; min-width:80px;">الرقم الوطني</th>
                     <th style="padding:3px;">الجنسية</th>
@@ -287,14 +289,15 @@ function getBranchName(courseName) {
                     <td style="padding:3px;">${fullname}</td>
                     <td style="padding:3px;">${student.fathername || ''}</td>
                     <td style="padding:3px;">${student.mothername || ''}</td>
+                    <td style="padding:3px;">${student.mobile || ''}</td>
                     <td style="padding:3px;">${student.date_of_birth || ''}</td>
                     <td style="padding:3px; white-space:nowrap;">${student.national_number || ''}</td>
                     <td style="padding:3px;">${student.nationality || ''}</td>
                     <td style="padding:3px;">${student.start_date || ''}</td>
                     <td style="padding:3px;">${student.end_date || ''}</td>
                     <td style="padding:3px; font-weight:bold;">${eligible}</td>
-                    <td style="padding:3px;">${student.teacher_name || ''}</td>
-                    <td style="padding:3px;">${student.year_number || ''}</td>
+                    <td style="padding:3px;">${student.teacherfull || ''}</td>
+                    <td style="padding:3px;">${student.page_number || ''}</td>
                 </tr>
             `);
         });

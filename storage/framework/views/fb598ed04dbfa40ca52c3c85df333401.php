@@ -8,23 +8,22 @@
 
     /* Page Header */
     .page-header-modern {
-        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 45%, #0ea5a4 100%);
-        padding: 28px 30px;
-        border-radius: 18px 18px 0 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 25px 30px;
+        border-radius: 16px 16px 0 0;
         position: relative;
         overflow: hidden;
         margin-bottom: 0;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
     }
 
     .page-header-modern::before {
         content: '';
         position: absolute;
-        top: -60%;
-        right: -8%;
-        width: 260px;
-        height: 260px;
-        background: rgba(255, 255, 255, 0.07);
+        top: -50%;
+        right: -10%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.05);
         border-radius: 50%;
         pointer-events: none;
     }
@@ -32,19 +31,19 @@
     .page-header-modern::after {
         content: '';
         position: absolute;
-        bottom: -25%;
-        left: -6%;
-        width: 180px;
-        height: 180px;
-        background: rgba(255, 255, 255, 0.04);
+        bottom: -30%;
+        left: -5%;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.03);
         border-radius: 50%;
         pointer-events: none;
     }
 
     .page-header-modern h3 {
         color: #ffffff;
-        font-weight: 800;
-        font-size: 1.7rem;
+        font-weight: 700;
+        font-size: 1.6rem;
         margin: 0;
         position: relative;
         z-index: 1;
@@ -54,8 +53,8 @@
     }
 
     .page-header-modern p {
-        color: rgba(255, 255, 255, 0.88);
-        margin: 8px 0 0 0;
+        color: rgba(255, 255, 255, 0.85);
+        margin: 5px 0 0 0;
         font-size: 0.9rem;
         position: relative;
         z-index: 1;
@@ -63,45 +62,43 @@
 
     .page-header-modern .header-stats {
         display: flex;
-        gap: 14px;
+        gap: 20px;
         position: relative;
         z-index: 1;
         flex-wrap: wrap;
-        justify-content: flex-end;
     }
 
     .page-header-modern .header-stats .stat-item {
-        background: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(10px);
-        padding: 9px 16px;
-        border-radius: 999px;
+        padding: 8px 18px;
+        border-radius: 50px;
         color: #ffffff;
-        font-size: 0.82rem;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
     }
 
     .page-header-modern .header-stats .stat-item strong {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     /* Main Card */
     .main-card-modern {
         background: #ffffff;
-        border-radius: 18px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-        border: 1px solid rgba(148, 163, 184, 0.18);
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid #eef2f7;
     }
 
     /* Action Bar */
     .action-bar-modern {
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-        padding: 16px 25px;
-        border-bottom: 1px solid #e5e7eb;
+        background: #f8faff;
+        padding: 15px 25px;
+        border-bottom: 1px solid #eef2f7;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -237,15 +234,15 @@
     }
 
     .table-modern thead th {
-        font-weight: 700;
+        font-weight: 600;
         padding: 12px 15px;
         text-align: center;
         font-size: 0.78rem;
         text-transform: uppercase;
         letter-spacing: 0.3px;
-        border-bottom: 2px solid #e2e8f0;
-        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
-        color: #1f2937;
+        border-bottom: 2px solid #eef2f7;
+        background: #f8faff;
+        color: #2d3436;
     }
 
     .table-modern thead th.primary-header {
@@ -755,12 +752,12 @@
                                 <td><input type="text" name="mothername" class="form-control" value="<?php echo e(old('mothername', $y->mothername)); ?>"></td>
                                 <td><strong>الرقم الوطني:</strong></td>
                                 <td><input type="text" name="national_number" class="form-control" value="<?php echo e(old('national_number', $students->national_number)); ?>"></td>
-                                <td><strong>مكان الولادة:</strong></td>
-                                <td>
-                                    <input type="text" name="date_of_birth" class="form-control"
-                                           value="<?php echo e(old('date_of_birth', $y->date_of_birth)); ?>"
-                                           placeholder="أدخل مكان الولادة">
-                                </td>
+                                 <td><strong>مكان الولادة:</strong></td>
+    <td>
+        <input type="text" name="date_of_birth" class="form-control"
+               value="<?php echo e(old('date)of)birth', $y->date_of_birth)); ?>"
+               placeholder="أدخل مكان الولادة">
+    </td>
                                 <td><strong>الجنسية:</strong></td>
                                 <td><input type="text" name="nationality" class="form-control" value="<?php echo e(old('nationality', $y->nationality)); ?>"></td>
                             </tr>
@@ -925,7 +922,7 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
                                 <td><?php echo e($course->end_date); ?></td>
                                 <td><?php echo e($course->start_hour); ?></td>
                                 <td><?php echo e($course->end_hour); ?></td>
-                                <td><strong><?php echo e(number_format($course->price)); ?> ج.م</strong></td>
+                                <td><strong><?php echo e(number_format($course->price)); ?> ل.س</strong></td>
                                 <td><?php echo e($course->pivot->page_number ?? '—'); ?></td>
                                 <td>
                                     <form action="<?php echo e(route('update.course.year.serial', [$students->id, $course->id])); ?>" method="POST" style="display: inline-flex; gap: 5px; align-items: center;">
@@ -946,9 +943,9 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
                                 </td>
                                 <td>
                                     <?php if($totalPaid == 0): ?>
-                                        <span class="status-badge danger"><?php echo e(number_format($course->price)); ?> ج.م</span>
+                                        <span class="status-badge danger"><?php echo e(number_format($course->price)); ?> ل.س</span>
                                     <?php elseif($remaining > 0): ?>
-                                        <span class="status-badge warning"><?php echo e(number_format($remaining)); ?> ج.م</span>
+                                        <span class="status-badge warning"><?php echo e(number_format($remaining)); ?> ل.س</span>
                                     <?php else: ?>
                                         <span class="status-badge success"><i class="fas fa-check"></i> مسدد بالكامل</span>
                                     <?php endif; ?>
@@ -1007,7 +1004,7 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
                     <div style="background: #f8faff; padding: 15px; border-radius: 12px; border: 1px solid #eef2f7; text-align: center;">
                         <i class="fas fa-coins" style="font-size: 1.5rem; color: #667eea;"></i>
                         <h5 style="margin: 5px 0 0 0; font-weight: 700; color: #667eea;">
-                            <?php echo e(number_format($students->payments->sum('payment_value'))); ?> ج.م
+                            <?php echo e(number_format($students->payments->sum('payment_value'))); ?> ل.س
                         </h5>
                         <span style="color: #6c757d; font-size: 0.8rem;">إجمالي المدفوعات</span>
                     </div>
@@ -1087,7 +1084,7 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
     </div>
     <div class="col-md-2">
         <div class="form-group-modern">
-            <label for="paymentValue">قيمة الدفعة (ج.م) <span class="text-danger">*</span></label>
+            <label for="paymentValue">قيمة الدفعة (ل.س) <span class="text-danger">*</span></label>
             <input type="number" class="form-control" id="paymentValue" required
                    placeholder="المبلغ" min="1" step="0.01">
         </div>
@@ -1095,7 +1092,7 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
          <div class="col-md-2">
                 <div class="form-group-modern">
                     <label for="discount" style="color:#eb3349;">
-                        <i class="fas fa-percent"></i> الحسم (ج.م)
+                        <i class="fas fa-percent"></i> الحسم (ل.س)
                     </label>
                     <input type="number" class="form-control" id="discount"
                            placeholder="0" min="0" step="0.01" value="0"
@@ -1126,14 +1123,14 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
 <div id="paymentCourseInfo" class="mt-3" style="display: none;">
     <div class="alert alert-info" style="border-radius: 8px; padding: 10px 15px;">
         <i class="fas fa-info-circle"></i>
-        <span id="courseInfoText">سعر الدورة: <strong>0</strong> ج.م | المتبقي: <strong>0</strong> ج.م</span>
+        <span id="courseInfoText">سعر الدورة: <strong>0</strong> ل.س | المتبقي: <strong>0</strong> ل.س</span>
     </div>
 </div>
                     <!-- Show remaining balance info -->
                     <div id="paymentCourseInfo" class="mt-3" style="display: none;">
                         <div class="alert alert-info" style="border-radius: 8px; padding: 10px 15px;">
                             <i class="fas fa-info-circle"></i>
-                            <span id="courseInfoText">سعر الدورة: <strong>0</strong> ج.م | المتبقي: <strong>0</strong> ج.م</span>
+                            <span id="courseInfoText">سعر الدورة: <strong>0</strong> ل.س | المتبقي: <strong>0</strong> ل.س</span>
                         </div>
                     </div>
                 </form>
@@ -1182,13 +1179,13 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
             <td><?php echo e($payment->course->subject_name ?? '—'); ?></td>
 
             
-            <td><strong><?php echo e(number_format($payment->payment_value)); ?> ج.م</strong></td>
+            <td><strong><?php echo e(number_format($payment->payment_value)); ?> ل.س</strong></td>
             
              <td>
                 <?php if($payment->discount && $payment->discount > 0): ?>
                     <span class="status-badge" style="background:#f8d7da; color:#721c24;">
                         <i class="fas fa-percent"></i>
-                        <?php echo e(number_format($payment->discount)); ?> ج.م
+                        <?php echo e(number_format($payment->discount)); ?> ل.س
                     </span>
                 <?php else: ?>
                     <span style="color:#adb5bd;">—</span>
@@ -1364,7 +1361,7 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
                 <div class="col-md-4">
                     <div style="background: #f8faff; padding: 20px; border-radius: 12px; border: 1px solid #eef2f7; text-align: center;">
                         <i class="fas fa-money-bill" style="font-size: 2rem; color: #11998e;"></i>
-                        <h4 style="margin: 5px 0 0 0; font-weight: 700; color: #11998e;"><?php echo e(number_format($students->payments->sum('payment_value'))); ?> ج.م</h4>
+                        <h4 style="margin: 5px 0 0 0; font-weight: 700; color: #11998e;"><?php echo e(number_format($students->payments->sum('payment_value'))); ?> ل.س</h4>
                         <span style="color: #6c757d; font-size: 0.85rem;">إجمالي المدفوعات</span>
                     </div>
                 </div>
@@ -1458,7 +1455,7 @@ DELETE MODAL (only in edit mode)
                     form.style.display = 'none';
                     document.body.appendChild(form);
                 }
-                form.action = `/mic/public/delete-student-course/${studentId}/${courseId}`;
+                form.action = `<?php echo e(url('/delete-student-course')); ?>/${studentId}/${courseId}`;
                 form.submit();
             }
         });
@@ -1535,7 +1532,7 @@ DELETE MODAL (only in edit mode)
                         <td>${data.course.end_date}</td>
                         <td>${data.course.start_hour}</td>
                         <td>${data.course.end_hour}</td>
-                        <td><strong>${data.course.price} ج.م</strong></td>
+                        <td><strong>${data.course.price} ل.س</strong></td>
                         <td>—</td>
                         <td>
                             <form action="/update-course-year-serial/${studentId}/${data.course.id}" method="POST" style="display: inline-flex; gap: 5px; align-items: center;">
@@ -1545,7 +1542,7 @@ DELETE MODAL (only in edit mode)
                                 <button type="submit" class="table-action-btn btn-primary-sm" style="padding: 2px 10px;">حفظ</button>
                             </form>
                         </td>
-                        <td><span class="status-badge warning">${data.course.price} ج.م</span></td>
+                        <td><span class="status-badge warning">${data.course.price} ل.س</span></td>
                         <td>
                             <button class="table-action-btn btn-danger-sm" onclick="confirmDelete(${studentId}, ${data.course.id})">
                                 <i class="fas fa-trash-alt"></i> حذف
@@ -1732,9 +1729,9 @@ if (categorySelect) {
 
                         let html = `
                             <strong>${courseName}</strong> |
-                            سعر الدورة: <strong>${Number(coursePrice).toLocaleString()}</strong> ج.م |
-                            المدفوع: <strong>${Number(totalPaid).toLocaleString()}</strong> ج.م |
-                            المتبقي: <strong style="color: ${remaining > 0 ? '#f7971e' : '#28a745'};">${Number(remaining).toLocaleString()}</strong> ج.م
+                            سعر الدورة: <strong>${Number(coursePrice).toLocaleString()}</strong> ل.س |
+                            المدفوع: <strong>${Number(totalPaid).toLocaleString()}</strong> ل.س |
+                            المتبقي: <strong style="color: ${remaining > 0 ? '#f7971e' : '#28a745'};">${Number(remaining).toLocaleString()}</strong> ل.س
                         `;
                         if (isFullyPaid) {
                             html += ' ✅ <span style="color: #28a745; font-weight: bold;">(مسدد بالكامل)</span>';

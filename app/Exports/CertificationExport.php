@@ -5,6 +5,7 @@ namespace App\Exports;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Carbon\Carbon;
 
 class CertificationExport implements FromArray, WithCustomStartCell
 {
@@ -26,9 +27,9 @@ class CertificationExport implements FromArray, WithCustomStartCell
     {
         $rows = [];
 
-        $grouped = $this->students->groupBy('page_number')->sortKeys();
+        $grouped    = $this->students->groupBy('page_number')->sortKeys();
         $totalPages = $grouped->count();
-        $pageIndex = 0;
+        $pageIndex  = 0;
 
         $emptyRow = array_fill(0, 13, '');
 
@@ -54,12 +55,26 @@ class CertificationExport implements FromArray, WithCustomStartCell
 
             foreach ($studentsInPage as $student) {
 
+
+                $fullname = trim(($student->firstname ?? '') . ' ' . ($student->lastname ?? ''));
+
+
+                $birth = $student->birth_date ?? null;
+                $eligible = 'لا';
+                if ($birth) {
+                    try {
+                        $eligible = Carbon::parse($birth)->age >= 15 ? 'نعم' : 'لا';
+                    } catch (\Exception $e) {
+                        $eligible = 'لا';
+                    }
+                }
+
                 $rows[] = [
                     'دمشق',
                     'مركز المأمون',
-                    $student->course_name, // ✅ صار ثابت لكل صفحة
+                    $student->course_name,
                     $student->page_number,
-                    $student->fullname ?? '',
+                    $fullname,
                     $student->fathername ?? '',
                     $student->mothername ?? '',
                     $student->date_of_birth ?? '',
@@ -67,7 +82,7 @@ class CertificationExport implements FromArray, WithCustomStartCell
                     $student->nationality ?? '',
                     $student->start_date ?? '',
                     $student->end_date ?? '',
-                    'نعم',
+                    $eligible,
                 ];
             }
 

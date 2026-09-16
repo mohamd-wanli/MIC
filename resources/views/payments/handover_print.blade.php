@@ -40,13 +40,13 @@
                 <td>{{ $p->receipt_number }}</td>
                 <td>{{ $p->student->fullname ?? '—' }}</td>
                 <td>{{ $p->course->subject_name ?? '—' }}</td>
-                <td>{{ number_format($p->payment_value) }} ج.م</td>
+                <td>{{ number_format($p->payment_value) }} ل.س</td>
                 <td>{{ $p->collected_at ? $p->collected_at->format('Y-m-d') : '—' }}</td>
             </tr>
         @endforeach
         <tr>
             <td colspan="4"><strong>الإجمالي</strong></td>
-            <td colspan="2"><strong>{{ number_format($payments->sum('payment_value')) }} ج.م</strong></td>
+            <td colspan="2"><strong>{{ number_format($payments->sum('payment_value')) }} ل.س</strong></td>
         </tr>
     </tbody>
 </table>
