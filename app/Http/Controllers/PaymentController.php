@@ -31,10 +31,10 @@ if ($paymentValue <= 0 && $discount <= 0) {
     ], 422);
 }
 
-            // Add department_id if missing
-            if (!isset($data['department_id']) && auth()->user()) {
-                $data['department_id'] = auth()->user()->department_id;
-            }
+            // // Add department_id if missing
+            // if (!isset($data['department_id']) && auth()->user()) {
+            //     $data['department_id'] = auth()->user()->department_id;
+            // }
 
 
             $data['payment_category'] = $request->input('payment_category', 'course');

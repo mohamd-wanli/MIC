@@ -22,6 +22,22 @@ class PaymentService {
         //     $this->validateCourseExists($data['course_id']);
         // }
 
+          $departmentId = null;
+
+    if (!empty($data['course_id'])) {
+        $this->validateCourseExists($data['course_id']);
+        $course = \App\Models\Course::find($data['course_id']);
+        $departmentId = $course->dep_id ?? null;
+    }
+    if (!$departmentId) {
+        // fallback: user's own department
+        $departmentId = $data['department_id']
+            ?? (auth()->user()?->department_id ?? null);
+    }
+
+    $data['department_id'] = $departmentId;
+
+
         // Set default category
         if (!isset($data['payment_category'])) {
             $data['payment_category'] = 'course';

@@ -27,11 +27,19 @@
 
     <h2>مركز المأمون الدولي</h2>
     <div class="meta">
-        {{ $title }}<br>
-        {{ $subtitle }}<br>
-        تاريخ الطباعة: {{ now()->format('Y-m-d H:i') }}
-        — بواسطة: {{ auth()->user()->name }}
-    </div>
+    {{ $title }}<br>
+    {{ $subtitle }}<br>
+
+    @if(request('department_id'))
+        @php
+            $deptName = \App\Models\Department::find(request('department_id'))?->name;
+        @endphp
+        <strong>القسم: {{ $deptName }}</strong><br>
+    @endif
+
+    تاريخ الطباعة: {{ now()->format('Y-m-d H:i') }}
+    — بواسطة: {{ auth()->user()->name }}
+</div>
 
     <div class="summary">
         <div>
