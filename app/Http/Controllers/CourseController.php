@@ -194,7 +194,7 @@ public function saveAllCourseGrades(Request $request)
     return response()->json(['success' => true]);
     }
 
-   
+
 
     public function assignPageNumbers(Request $request)
 {
@@ -272,27 +272,35 @@ public function saveAllCourseGrades(Request $request)
         ->with('success', 'تم إدخال رقم الصفحة' . ($hasPageNumber ? ' وتحديثه' : '') . ' وحذف الدورة من قائمة قيد العمل.');
 }
 
-public function edit($id)
+   public function edit($id)
     {
     $course = Course::findOrFail($id);
     $user = Auth::user();
 
-    // جلب الأقسام فقط للمشرف
+
     $departments = $user->department_id === null ? Department::all() : null;
 
-    // جلب المواد حسب القسم
-    $subjects = Subject::where('department_id', $course->department_id)->get();
 
-    // جلب المدرسين المرتبطين بالمادة الحالية
+    $subjects = Subject::where('department_id', $course->department_id)->get();
+        $subjects    = Subject::orderBy('name')->get();
+
+
     $teachers = Teacher::whereHas('subjects', function ($query) use ($course) {
         $query->where('name', $course->subject_name);
     })->get();
-     $teachers    = Teacher::all(); 
+     $teachers    = Teacher::all();
+
 
     return view('course.editcourse', compact('course', 'departments', 'subjects', 'teachers'));
    }
-public function update(Request $request, int $id)
-{
+
+
+
+     public function update(Request $request, int $id)
+
+     {
+
+
     $user = Auth::user();
     $course = Course::findOrFail($id);
 
@@ -307,8 +315,8 @@ public function update(Request $request, int $id)
         'price'         => ['required'],
         'coursedays'    => ['required'],
         'numsession'    => ['required'],
-        'subjectcourse' => ['required'],
-        'teacher_id'    => ['nullable', 'exists:teachers,id'],   // ✅ NEW
+        'subjectcourse' => ['required', 'exists:subjects,id'],
+        'teacher_id'    => ['nullable', 'exists:teachers,id'],
         'coursenumber'  => ['nullable'],
         'note'          => ['nullable'],
     ]);
@@ -324,7 +332,7 @@ public function update(Request $request, int $id)
         return redirect()->back()->with('error', 'رقم الدورة موجود مسبقاً لنفس المادة');
     }
 
-    // ✅ Resolve the full name from teacher_id (for backward compatibility)
+
     $teacherName = null;
     if ($request->filled('teacher_id')) {
         $teacher = \App\Models\Teacher::find($request->teacher_id);
@@ -335,6 +343,7 @@ public function update(Request $request, int $id)
 
     $course->update([
         'department_id'   => $departmentId,
+        'subject_id'      => $request->subjectcourse,
         'price'           => $request->price,
         'start_date'      => $request->startdate,
         'end_date'        => $request->enddate,
@@ -344,8 +353,8 @@ public function update(Request $request, int $id)
         'coursenumber'    => $request->coursenumber,
         'note'            => $request->note,
         'days_of_course'  => is_array($request->coursedays) ? implode(",", $request->coursedays) : $request->coursedays,
-        'teacher_id'      => $request->teacher_id,   // ✅ the source of truth
-        'teacher_name'    => $teacherName,           // ✅ kept in sync (fallback)
+        'teacher_id'      => $request->teacher_id,
+        'teacher_name'    => $teacherName,
     ]);
 
     return redirect()->route('showcourses')->with('success', 'تم تعديل الدورة بنجاح');

@@ -310,25 +310,38 @@
         display: none;
     }
 
-    @media print {
-        /* Hide everything except print area */
-        body * {
-            visibility: hidden;
-        }
+   @media print {
 
-        #print-area,
-        #print-area * {
-            visibility: visible;
-        }
+    @page {
+        size: A4;
+        margin: 0;
+    }
 
-        #print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            padding: 20px;
-            background: #ffffff;
-        }
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Hide everything except print area */
+    body * {
+        visibility: hidden;
+    }
+
+    #print-area,
+    #print-area * {
+        visibility: visible;
+    }
+
+    #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 15mm;
+        background: #ffffff;
+        box-sizing: border-box;
+    }
+
 
         /* Hide scrollbar container and overflow */
         .table-container-modern {

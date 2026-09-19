@@ -743,20 +743,25 @@
                             </div>
                         @endif
                     </div>
-
-                    <!-- Subject -->
-                    <div class="form-group-modern">
-                        <label for="subjectcourse">
-                            المادة
-                            <span class="required">*</span>
-                        </label>
-                        <div class="info-readonly-modern">
-                            <i class="fas fa-book"></i>
-                            {{ $course->subject_name }}
-                        </div>
-                        <input type="hidden" name="subjectcourse" id="subjectcourse" value="{{ $course->subject_id }}">
-                    </div>
-                </div>
+<!-- Subject -->
+<div class="form-group-modern">
+    <label for="subjectcourse">
+        المادة
+        <span class="required">*</span>
+    </label>
+    <select class="form-select" id="subjectcourse" name="subjectcourse" required>
+        <option value="">اختر المادة</option>
+        @foreach ($subjects as $subject)
+            <option value="{{ $subject->id }}"
+                {{ (int) old('subjectcourse', $course->subject_id) === $subject->id ? 'selected' : '' }}>
+                {{ $subject->name }}
+            </option>
+        @endforeach
+    </select>
+    <div class="invalid-feedback">
+        الرجاء اختيار المادة
+    </div>
+</div>
 
                 <!-- Section 5: Teacher -->
                 <div class="form-section-title mt-4">

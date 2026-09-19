@@ -743,21 +743,26 @@
                             </div>
                         <?php endif; ?>
                     </div>
+<!-- Subject -->
+<div class="form-group-modern">
+    <label for="subjectcourse">
+        المادة
+        <span class="required">*</span>
+    </label>
+    <select class="form-select" id="subjectcourse" name="subjectcourse" required>
+        <option value="">اختر المادة</option>
+        <?php $__currentLoopData = $subjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subject): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($subject->id); ?>"
+                <?php echo e((int) old('subjectcourse', $course->subject_id) === $subject->id ? 'selected' : ''); ?>>
+                <?php echo e($subject->name); ?>
 
-                    <!-- Subject -->
-                    <div class="form-group-modern">
-                        <label for="subjectcourse">
-                            المادة
-                            <span class="required">*</span>
-                        </label>
-                        <div class="info-readonly-modern">
-                            <i class="fas fa-book"></i>
-                            <?php echo e($course->subject_name); ?>
-
-                        </div>
-                        <input type="hidden" name="subjectcourse" id="subjectcourse" value="<?php echo e($course->subject_id); ?>">
-                    </div>
-                </div>
+            </option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </select>
+    <div class="invalid-feedback">
+        الرجاء اختيار المادة
+    </div>
+</div>
 
                 <!-- Section 5: Teacher -->
                 <div class="form-section-title mt-4">
