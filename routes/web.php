@@ -89,7 +89,7 @@ Route::resource('student', StudentController::class);
 
 Route::post('update_status/{id}', [StudentController::class, 'update_status'])->name('update_status');
 Route::get('/deletestu/{id}', [StudentController::class, 'destroy'])->name('deletestudent');
-Route::delete('/delete-student-course/{student_id}/{course_id}', [StudentController::class, 'deleteStudentFromCourse']);
+Route::delete('/delete-student-course/{student_id}/{course_id}', [StudentController::class, 'deleteStudentFromCourse'])->name('deletefromcourse');
 Route::get('/create', [StudentController::class, 'create2'])->name('createstudent');
 Route::post('/store', [StudentController::class, 'store2'])->name("storestudent");
 Route::get('/shows', [StudentController::class, 'index2'])->name('showstudents');

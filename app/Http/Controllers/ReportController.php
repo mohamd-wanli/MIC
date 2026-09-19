@@ -131,6 +131,7 @@ public function financialReport(Request $request)
                 'extra_student.mothername',
                 'extra_student.date_of_birth',
                 'extra_student.nationality',
+                 'extra_student.birth_date',
                 'stucourse.page_number',
                 'stucourse.general_number',
                 'courses.subject_name as course_name',

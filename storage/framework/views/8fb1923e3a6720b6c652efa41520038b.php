@@ -711,7 +711,7 @@
         function loadSubjects(departmentId, selectedSubjectId) {
             if (departmentId) {
                 $.ajax({
-                    url: `/mic/api/subjects/${departmentId}`,
+                    url: `/api/subjects/${departmentId}`,
                     type: 'GET',
                     success: function(data) {
                         $('#subjectcourse').empty().append('<option value="">اختر المادة</option>');

@@ -765,12 +765,20 @@
                     المدرس
                 </div>
 
-                <div class="form-group-modern">
-                    <label for="teacher_name">
-                        اسم المدرس
-                    </label>
-                    <input type="text" id="teacher_name" name="teacher_name" class="form-control" placeholder="أدخل اسم المدرس" value="{{ $course->teacher_name }}">
-                </div>
+               <div class="form-group-modern">
+    <label for="teacher_id">
+        اسم المدرس
+    </label>
+    <select id="teacher_id" name="teacher_id" class="form-select">
+        <option value="">— بدون مدرس —</option>
+        @foreach($teachers as $teacher)
+            <option value="{{ $teacher->id }}"
+                    {{ (int) old('teacher_id', $course->teacher_id) === $teacher->id ? 'selected' : '' }}>
+                {{ $teacher->name }} {{ $teacher->lastname }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
                 <!-- Submit Buttons -->
                 <div class="row mt-4">

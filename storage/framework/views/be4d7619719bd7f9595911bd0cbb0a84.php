@@ -26,14 +26,22 @@
 <body onload="window.print()">
 
     <h2>مركز المأمون الدولي</h2>
-    <div class="meta">
-        <?php echo e($title); ?><br>
-        <?php echo e($subtitle); ?><br>
-        تاريخ الطباعة: <?php echo e(now()->format('Y-m-d H:i')); ?>
+<div class="meta">
+    <?php echo e($title); ?><br>
+    <?php echo e($subtitle); ?><br>
 
-        — بواسطة: <?php echo e(auth()->user()->name); ?>
+    <?php if(request('department_id')): ?>
+        <?php
+            $deptName = \App\Models\Department::find(request('department_id'))?->name;
+        ?>
+        <strong>القسم: <?php echo e($deptName); ?></strong><br>
+    <?php endif; ?>
 
-    </div>
+    تاريخ الطباعة: <?php echo e(now()->format('Y-m-d H:i')); ?>
+
+    — بواسطة: <?php echo e(auth()->user()->name); ?>
+
+</div>
 
     <div class="summary">
         <div>

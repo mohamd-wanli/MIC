@@ -17,42 +17,6 @@ use Carbon\Carbon;
 class CourseController extends Controller
 {
 
-// public function index()
-// {
-//     $departments = Department::all();
-//     $subjects = Subject::all();
-//     $teachers = Teacher::all();
-
-//     $stucourse = DB::table('stucourse')
-//         ->select(
-//             'course_id',
-
-//              DB::raw('MIN(course_number) as course_number'),
-//              DB::raw('MIN(page_number) as page_number')
-//         )
-//          ->groupBy('course_id');
-
-//     $courses = Course::leftJoinSub($stucourse, 'stucourse', function ($join) {
-//             $join->on('courses.id', '=', 'stucourse.course_id');
-//         })
-//         ->select(
-//             'courses.*',
-//             'stucourse.course_number',
-//             'stucourse.page_number'
-//         )
-//       ->orderBy('courses.created_at', 'desc')
-//         ->paginate(25);
-
-
-
-//     return view('course.show_courses', [
-//         'courses' => $courses,
-//         'subjects' => $subjects,
-//         'teachers' => $teachers,
-//         'departments' => $departments
-//     ]);
-// }
-
 
 
 
@@ -230,60 +194,7 @@ public function saveAllCourseGrades(Request $request)
     return response()->json(['success' => true]);
     }
 
-    // public function assignPageNumbers(Request $request)
-    // {
-    //     $request->validate([
-    //         'course_id' => 'required|exists:courses,id',
-    //         'page_number' => 'required|integer|min:1'
-    //     ]);
-
-    //     $course = Course::findOrFail($request->course_id);
-    //     $manualPageNumber = $request->page_number;
-
-
-    //     $courseYear = Carbon::parse($course->end_date)->year;
-
-    //     // آخر رقم عام بنفس السنة
-    //     $lastGlobalGeneralNumber = DB::table('stucourse')
-    //             ->join('courses', 'stucourse.course_id', '=', 'courses.id')
-    //             ->whereYear('courses.end_date', $courseYear)
-    //             ->max('stucourse.general_number') ?? 0;
-
-    //     // الطلاب الجدد فقط
-    //     $students = $course->students()
-    //         ->whereNull('stucourse.general_number')
-    //         ->orderBy('student_id')
-    //         ->get();
-
-    //     foreach ($students as $student) {
-    //         $lastGlobalGeneralNumber++;
-
-    //         DB::table('stucourse')
-    //             ->where('course_id', $course->id)
-    //             ->where('student_id', $student->id)
-    //             ->update([
-    //                 'page_number' => $manualPageNumber,
-    //                 'general_number' => $lastGlobalGeneralNumber,
-    //             ]);
-    //     }
-
-    //     /*
-    //     =========================
-    //      هون الجزء المهم الجديد
-    //     =========================
-    //     */
-
-
-    //     $selectedCourses = session('selected_courses', []);
-
-    //     if (($key = array_search($course->id, $selectedCourses)) !== false) {
-    //         unset($selectedCourses[$key]);
-    //         session(['selected_courses' => array_values($selectedCourses)]);
-    //     }
-
-    //     return redirect()->back()
-    //         ->with('success', 'تم إدخال رقم الصفحة وحذف الدورة من قائمة قيد العمل.');
-    // }
+   
 
     public function assignPageNumbers(Request $request)
 {
@@ -376,66 +287,69 @@ public function edit($id)
     $teachers = Teacher::whereHas('subjects', function ($query) use ($course) {
         $query->where('name', $course->subject_name);
     })->get();
+     $teachers    = Teacher::all(); 
 
     return view('course.editcourse', compact('course', 'departments', 'subjects', 'teachers'));
    }
+public function update(Request $request, int $id)
+{
+    $user = Auth::user();
+    $course = Course::findOrFail($id);
 
-public function update(Request $request,int $id)
-    {
+    // Department: Admin can change it, others keep their own
+    $departmentId = $user->department_id === null ? $request->department_id : $course->department_id;
 
-        $user = Auth::user();
-        $course = Course::findOrFail($id);
+    $request->validate([
+        'startdate'     => ['required'],
+        'enddate'       => ['required'],
+        'starthour'     => ['required'],
+        'endhour'       => ['required'],
+        'price'         => ['required'],
+        'coursedays'    => ['required'],
+        'numsession'    => ['required'],
+        'subjectcourse' => ['required'],
+        'teacher_id'    => ['nullable', 'exists:teachers,id'],   // ✅ NEW
+        'coursenumber'  => ['nullable'],
+        'note'          => ['nullable'],
+    ]);
 
-        // إذا كان المستخدم Admin، يسمح له بتعديل القسم، وإلا يبقى قسمه كما هو
-        $departmentId = $user->department_id === null ? $request->department_id : $course->department_id;
+    $subject = Subject::find($request->subjectcourse);
 
-        $request->validate([
-            'startdate' => ['required'],
-            'enddate' => ['required'],
-            'starthour' => ['required'],
-            'endhour' => ['required'],
-            'price' => ['required'],
-            'coursedays' => ['required'],
-            'numsession' => ['required'],
-            'subjectcourse' => ['required'],
-            'teacher_name' => ['nullable'],
-            'coursenumber' => ['nullable'],
-            'note' => ['nullable'],
-        ]);
+    $exists = Course::where('coursenumber', $request->coursenumber)
+        ->where('subject_id', $subject->id)
+        ->where('id', '!=', $course->id)
+        ->exists();
 
-        // $subject = Subject::where('name', $request->subjectcourse)->first();
-        // if (!$subject) {
-        //     return redirect()->back()->with('error', 'المادة غير موجودة');
-        // }
-           $subject = Subject::find($request->subjectcourse);
-
-        $exists = Course::where('coursenumber', $request->coursenumber)
-    ->where('subject_id', $subject->id)
-    ->where('id', '!=', $course->id)   
-    ->exists();
-          if($exists){
-            return redirect()->back()->with('error', 'رقم الدورة موجود مسبقاً لنفس المادة');
-          }
-
-        $course->update([
-            'department_id' => $departmentId,
-        //    'subject_id' => $subject->id,
-
-        //     'subject_name' => $subject->name,
-            'price' => $request->price,
-            'start_date' => $request->startdate,
-            'end_date' => $request->enddate,
-            'start_hour' => $request->starthour,
-            'end_hour' => $request->endhour,
-            'num_of_session' => $request->numsession,
-            'coursenumber' => $request->coursenumber,
-            'note' => $request->note,
-            'days_of_course' => is_array($request->coursedays) ? implode(",", $request->coursedays) : $request->coursedays,
-            'teacher_name' => $request->teacher_name ?? null
-        ]);
-
-        return redirect()->route('showcourses')->with('success', 'تم تعديل الدورة بنجاح');
+    if ($exists) {
+        return redirect()->back()->with('error', 'رقم الدورة موجود مسبقاً لنفس المادة');
     }
+
+    // ✅ Resolve the full name from teacher_id (for backward compatibility)
+    $teacherName = null;
+    if ($request->filled('teacher_id')) {
+        $teacher = \App\Models\Teacher::find($request->teacher_id);
+        if ($teacher) {
+            $teacherName = trim($teacher->name . ' ' . $teacher->lastname);
+        }
+    }
+
+    $course->update([
+        'department_id'   => $departmentId,
+        'price'           => $request->price,
+        'start_date'      => $request->startdate,
+        'end_date'        => $request->enddate,
+        'start_hour'      => $request->starthour,
+        'end_hour'        => $request->endhour,
+        'num_of_session'  => $request->numsession,
+        'coursenumber'    => $request->coursenumber,
+        'note'            => $request->note,
+        'days_of_course'  => is_array($request->coursedays) ? implode(",", $request->coursedays) : $request->coursedays,
+        'teacher_id'      => $request->teacher_id,   // ✅ the source of truth
+        'teacher_name'    => $teacherName,           // ✅ kept in sync (fallback)
+    ]);
+
+    return redirect()->route('showcourses')->with('success', 'تم تعديل الدورة بنجاح');
+}
 
 public function Course_active(Request $request)
 {

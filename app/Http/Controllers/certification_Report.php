@@ -111,13 +111,13 @@ class certification_Report extends Controller
     }
     $student->certificate_eligible = ($age !== null && $age >= 15);
     return $student;
-});
+      });
 
         return view('report.certification_report', compact('students', 'courses', 'courseInfo','page_number'));
 
     }
        public function exportExcel(Request $request)
-{
+     {
     $startAt     = $request->start_at;
     $endAt       = $request->end_at;
     $teacherName = $request->teacher_name;
