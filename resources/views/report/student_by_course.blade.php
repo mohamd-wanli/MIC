@@ -618,6 +618,13 @@
                         <i class="fas fa-file-invoice"></i>
                         طباعة التقرير المالي
                     </a>
+                   <a href="{{ route('courses.gradesReport', request()->all()) }}"
+   target="_blank"
+   class="btn-print-modern btn-primary"
+   style="background: linear-gradient(135deg, #667eea, #764ba2); color:#fff;">
+    <i class="fas fa-clipboard-check"></i>
+    طباعة كشف الدرجات
+</a>
                 </div>
 
             @elseif(isset($students))

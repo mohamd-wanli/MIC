@@ -35,6 +35,7 @@ class certification_Report extends Controller
             ->join('stucourse', 'students.id', '=', 'stucourse.student_id')
             ->join('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->join('courses', 'stucourse.course_id', '=', 'courses.id')
+             ->leftJoin('departments', 'courses.department_id', '=', 'departments.id')
 
             ->select(
                 'students.id as student_id',
@@ -65,6 +66,7 @@ class certification_Report extends Controller
                 'courses.teacher_name',
                 'courses.start_hour',
                 'courses.end_hour',
+                 'departments.name as department_name',
             )
 
 

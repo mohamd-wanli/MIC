@@ -109,7 +109,7 @@
   .small-label { font-size: 9px; }
 
   .sign-row td {
-    height: 26px;
+    height: 55px;
     background: #fafafa;
     font-weight: bold;
     font-size: 11px;
@@ -299,7 +299,7 @@
         <td></td>
       </tr>
 
-      <tr class="empty-row">
+      <tr class="sign-row">
         <td></td><td></td>
          <td></td><td></td><td></td><td></td>
 

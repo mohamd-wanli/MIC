@@ -1,4 +1,3 @@
-    
 <?php $__env->startSection('css'); ?>
     <link rel="stylesheet" href="<?php echo e(asset('assets/plugins/datatable/css/jquery.dataTables.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('assets/plugins/datatable/css/buttons.dataTables.min.css')); ?>">
@@ -21,11 +20,13 @@
             vertical-align: middle;
             padding: 8px;
             border: 1px solid #ddd;
+            font-size: 15px;   /* ← bigger on-screen font */
         }
-
 
         th {
             background-color: #f2f2f2;
+            font-size: 16px;   /* ← bigger header font */
+            font-weight: 700;
         }
     </style>
 
@@ -176,15 +177,25 @@
     let formattedHours = hours % 12 || 12; // يحول 0 → 12
     return String(formattedHours).padStart(2, '0') + ':' + minutes;
 }
-// دالة لتحديد اسم الفرع بناءً على اسم الدورة
+//
 function getBranchName(courseName) {
     const halabouniKeywords = [
-        'حلاقة نسائية', 'تجميل', 'احترافي', 'تخصصي',
-        'تكنيك الوان الشعر', 'عناية بالبشرة', 'اكريليك', 'جل',
-        'رموش تجميليه', 'خياطه', 'القيادة الاداريه','سبورات','ادارة الأعمال'
-    ];
+        'حلاقة نسائية', 'تجميل', 'احترافي', 'تخصصي',    'حلاقة نسائية', 'حلاقه نسائية', 'حلاقة نسائيه', 'حلاقه نسائيه',
 
-    // تحويل اسم الدورة إلى نص للتأكد (وتوحيد حالة الأحرف اختياري)
+        'تكنيك الوان الشعر', 'عناية بالبشرة', 'اكريليك', 'جل','عناية بشرة',
+        'رموش تجميليه', 'خياطه', 'القيادة الاداريه','قيادة ادارية','سبورات'
+        ,'ادارة الأعمال','قيادة إدارية','قيادة إدارية'
+        ,'ادارة الاعمال','ادارة الأعمال','ادارة الاعمال',
+        'ادارة الأعمال','ادارة الاعمال','ادارة الأعمال',
+      ' احترافي', 'إحترافي', 'أحترافي',
+          'تكنيك الوان الشعر', 'تكنيك ألوان الشعر', 'تكنيك الوان شعر',
+           'عنايه بالبشره', 'عناية بالبشره',
+               'اكريليك', 'أكريليك', 'إكريليك', 'اكريللك', 'أكريللك',
+  'رموش تجميليه', 'رموش تجميلية', 'رموش تجميلى', 'رموش تجميلي',
+    'رموش تجميله', 'رموش تجميلة', 'الرموش التجميليه', 'الرموش التجميلة',
+
+
+    ];   // تحويل اسم الدورة إلى نص للتأكد (وتوحيد حالة الأحرف اختياري)
     const courseText = courseName || '';
 
     // هل تحتوي الدورة على أي كلمة من القائمة؟
@@ -202,6 +213,9 @@ function getBranchName(courseName) {
     messageTop: '',
     messageBottom: '',
     customize: function (win) {
+
+        win.document.title = 'تقرير القوائم';
+
         $(win.document.body).empty();
         $(win.document.body).css('margin-top', '20px');
 
@@ -213,7 +227,7 @@ function getBranchName(courseName) {
         var startHour = formatTo12Hour('<?php echo e($courseInfo->start_hour ?? ""); ?>');
         var endHour = formatTo12Hour('<?php echo e($courseInfo->end_hour ?? ""); ?>');
         var branchName = getBranchName(courseName);
-        var studentsData = <?php echo json_encode($students, 15, 512) ?>; // ✅ pass full students collection
+        var studentsData = <?php echo json_encode($students, 15, 512) ?>;
 
         $(win.document.body).css('direction', 'rtl');
         $(win.document.body).css('font-family', 'Arial');
@@ -252,7 +266,7 @@ function getBranchName(courseName) {
         `);
 
         // Create print table
-        var newTable = $('<table border="1" style="width:100%; border-collapse:collapse; font-size:10px;"></table>');
+        var newTable = $('<table border="1" style="width:100%; border-collapse:collapse; font-size:13px;"></table>');
         newTable.append(`
             <thead>
                 <tr>
@@ -262,6 +276,8 @@ function getBranchName(courseName) {
                     <th style="padding:3px;">الاسم والشهرة</th>
                     <th style="padding:3px;">اسم الأب</th>
                     <th style="padding:3px;">اسم الأم</th>
+                    <th style="padding:3px;">رقم الموبايل</th>
+
                     <th style="padding:3px;">تاريخ الميلاد</th>
                     <th style="padding:3px; min-width:80px;">الرقم الوطني</th>
                     <th style="padding:3px;">الجنسية</th>
@@ -287,14 +303,15 @@ function getBranchName(courseName) {
                     <td style="padding:3px;">${fullname}</td>
                     <td style="padding:3px;">${student.fathername || ''}</td>
                     <td style="padding:3px;">${student.mothername || ''}</td>
+                    <td style="padding:3px;">${student.mobile || ''}</td>
                     <td style="padding:3px;">${student.date_of_birth || ''}</td>
                     <td style="padding:3px; white-space:nowrap;">${student.national_number || ''}</td>
                     <td style="padding:3px;">${student.nationality || ''}</td>
                     <td style="padding:3px;">${student.start_date || ''}</td>
                     <td style="padding:3px;">${student.end_date || ''}</td>
                     <td style="padding:3px; font-weight:bold;">${eligible}</td>
-                    <td style="padding:3px;">${student.teacher_name || ''}</td>
-                    <td style="padding:3px;">${student.year_number || ''}</td>
+                    <td style="padding:3px;">${student.teacherfull || ''}</td>
+                    <td style="padding:3px;">${student.page_number || ''}</td>
                 </tr>
             `);
         });
@@ -305,8 +322,8 @@ function getBranchName(courseName) {
 
         // Footer
         newTable.after(`
-            <div style="margin-top:20px; width:100%; font-size:16px; display:flex; justify-content:space-between; direction:rtl; color:#000;">
-                <div style="text-align:right; font-weight:900; margin-right:40px;">قسم الشهادات</div>
+            <div style="margin-top:20px; width:100%; font-size:16px; display:flex; justify-content:center; gap:250px; direction:rtl; color:#000;">
+                <div style="text-align:right; font-weight:900;">قسم الشهادات</div>
                 <div style="text-align:center; font-weight:900;">المهندس مأمون الحلاق<br>المدير العام لمركز المأمون الدولي</div>
             </div>
         `);
@@ -314,10 +331,14 @@ function getBranchName(courseName) {
         // Print styles to ensure table fits
         $(win.document.head).append(`
             <style>
+                @page {
+                    size: A4 landscape;
+                    margin: 0;
+                }
                 @media print {
-                    body { margin: 10px; }
+                    body { margin: 10px; padding: 10px; }
                     table { border-collapse: collapse; width: 100%; }
-                    th, td { border: 1px solid black; padding: 3px; text-align: center; font-size: 9px; }
+                    th, td { border: 1px solid black; padding: 3px; text-align: center; font-size: 12px; }
                     thead { display: table-header-group; }
                     tfoot { display: table-footer-group; }
                     tr { page-break-inside: avoid; }
@@ -371,6 +392,13 @@ function getBranchName(courseName) {
             ordering: false,
             scrollX: true,
         });
+
+
+        setTimeout(function() {
+    win.focus();
+    win.print();
+    win.close();
+}, 50);
     </script>
 
 <?php $__env->stopSection(); ?>

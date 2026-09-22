@@ -26,14 +26,22 @@
 <body onload="window.print()">
 
     <h2>مركز المأمون الدولي</h2>
-    <div class="meta">
-        <?php echo e($title); ?><br>
-        <?php echo e($subtitle); ?><br>
-        تاريخ الطباعة: <?php echo e(now()->format('Y-m-d H:i')); ?>
+<div class="meta">
+    <?php echo e($title); ?><br>
+    <?php echo e($subtitle); ?><br>
 
-        — بواسطة: <?php echo e(auth()->user()->name); ?>
+    <?php if(request('department_id')): ?>
+        <?php
+            $deptName = \App\Models\Department::find(request('department_id'))?->name;
+        ?>
+        <strong>القسم: <?php echo e($deptName); ?></strong><br>
+    <?php endif; ?>
 
-    </div>
+    تاريخ الطباعة: <?php echo e(now()->format('Y-m-d H:i')); ?>
+
+    — بواسطة: <?php echo e(auth()->user()->name); ?>
+
+</div>
 
     <div class="summary">
         <div>
@@ -53,9 +61,12 @@
                 <th>رقم الوصل</th>
                 
                 <th>الطالب</th>
-                <th>الدورة</th>
+                   <th>الدورة</th>
+                 <th>رقم الدورة</th>
                 <th>المبلغ</th>
-                <th>القسم</th>
+                <th>الحسم</th>
+                <th>نوع الدفعة</th>
+
                 <?php if(isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at): ?>
                     <th>تاريخ التسليم</th>
                 <?php endif; ?>
@@ -67,10 +78,12 @@
                     <td><?php echo e($i + 1); ?></td>
                     <td><?php echo e($p->receipt_number ?? '—'); ?></td>
                     
-                    <td><?php echo e($p->student->fullname ?? '—'); ?></td>
+                      <td><?php echo e($p->student->fullname ?? '—'); ?></td>
                     <td><?php echo e($p->course->subject_name ?? '—'); ?></td>
+                   <td><?php echo e($p->course->coursenumber ?? '—'); ?></td>
                     <td><?php echo e(number_format($p->payment_value)); ?> ل.س</td>
-                    <td><?php echo e($p->department->name ?? '—'); ?></td>
+                    <td><?php echo e($p->discount); ?></td>
+                    <td><?php echo e($p->payment_category); ?></td>
                     <?php if(isset($payments->first()->surrendered_at) && $payments->first()->surrendered_at): ?>
                         <td><?php echo e($p->surrendered_at ? $p->surrendered_at->format('Y-m-d H:i') : '—'); ?></td>
                     <?php endif; ?>

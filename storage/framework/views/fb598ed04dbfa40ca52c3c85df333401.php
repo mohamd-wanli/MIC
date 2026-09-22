@@ -971,7 +971,7 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
     </form>
 </td>
                                 <td>
-                                    <button class="table-action-btn btn-danger-sm" onclick="confirmDelete(<?php echo e($students->id); ?>, <?php echo e($course->id); ?>)">
+                                    <button class="table-action-btn btn-danger-sm" onclick="confirmDelete(${ studentsId }, ${data.course.id})">
                                         <i class="fas fa-trash-alt"></i> حذف
                                     </button>
                                     <button class="table-action-btn btn-primary-sm" onclick="showTransferModal(<?php echo e($students->id); ?>, <?php echo e($course->id); ?>, '<?php echo e($course->coursenumber); ?>', '<?php echo e($course->subject_name); ?>')">
@@ -1242,6 +1242,11 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
                         onclick="deletePayment(<?php echo e($payment->id); ?>, <?php echo e($students->id); ?>)">
                     <i class="fas fa-trash-alt"></i> حذف
                 </button>
+                  <a href="<?php echo e(route('payment.print', $payment->id)); ?>" 
+       target="_blank" 
+       class="table-action-btn btn-primary-sm">
+        <i class="fas fa-print"></i> طباعة
+    </a>
             </td>
         </tr>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -1487,7 +1492,7 @@ if (deleteModal) {
         }
     });
 }
-    
+
 
 
 
@@ -1576,7 +1581,7 @@ if (deleteModal) {
                         <td>
                            <button type="button"
         class="table-action-btn btn-danger-sm"
-        onclick="confirmDelete(<?php echo e($students->id); ?>, <?php echo e($course->id); ?>)">
+        onclick="confirmDelete(${studentId}, ${data.course.id})">
     <i class="fas fa-trash-alt"></i> حذف
 </button>
                             <button class="table-action-btn btn-primary-sm" onclick="showTransferModal(${studentId}, ${data.course.id}, '${data.course.coursenumber}', '${data.course.subject_name}')">
@@ -1883,6 +1888,11 @@ if (!collectedAt) {
                             timer: 1500,
                             showConfirmButton: false
                         });
+                          if (data.payment && data.payment.id) {
+            setTimeout(() => {
+                window.open('/payment/print/' + data.payment.id, '_blank');
+            }, 800);
+        }
                         var formDiv = document.getElementById('addPaymentForm');
                         if (formDiv) formDiv.style.display = 'none';
                         var btn = document.getElementById('addPaymentButton');

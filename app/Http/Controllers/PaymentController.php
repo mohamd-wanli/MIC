@@ -15,6 +15,15 @@ class PaymentController extends Controller
         $this->paymentService=$paymentService;
     }
 
+    public function printReceipt($id)
+{
+    // Load the payment with its relationships
+    $payment = Payment::with(['student', 'course', 'department', 'enteredBy'])
+        ->findOrFail($id);
+    
+    return view('payments.print_receipt', compact('payment'));
+}
+
 
      public function store(PaymantRequest $request)
     {

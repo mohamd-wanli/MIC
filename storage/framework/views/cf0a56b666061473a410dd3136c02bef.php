@@ -1422,44 +1422,74 @@ DELETE MODAL (only in edit mode)
     // ==========================================
     // DELETE MODAL (only if element exists)
     // ==========================================
-    var deleteModal = document.getElementById('deleteModal');
-    if (deleteModal) {
-        deleteModal.addEventListener('show.bs.modal', function(event) {
-            var button = event.relatedTarget;
-            var studentId = button.getAttribute('data-id');
-            var form = deleteModal.querySelector('#deleteForm');
-            form.action = "<?php echo e(route('student.destroy', ':id')); ?>".replace(':id', studentId);
-        });
-    }
+   var deleteModal = document.getElementById('deleteModal');
+if (deleteModal) {
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var studentId = button.getAttribute('data-id');
+        var form = deleteModal.querySelector('#deleteForm');
+        form.action = "<?php echo e(url('/student')); ?>/" + studentId;
+    });
+}
 
     // ==========================================
     // CONFIRM DELETE FROM COURSE
     // ==========================================
-    function confirmDelete(studentId, courseId) {
-        Swal.fire({
-            title: 'هل أنت متأكد؟',
-            text: "سيتم حذف الطالب من هذه الدورة!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'نعم، احذف',
-            cancelButtonText: 'إلغاء'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                let form = document.getElementById('deleteCourseForm');
-                if (!form) {
-                    form = document.createElement('form');
-                    form.id = 'deleteCourseForm';
-                    form.method = 'POST';
-                    form.style.display = 'none';
-                    document.body.appendChild(form);
-                }
-                form.action = `<?php echo e(url('/delete-student-course')); ?>/${studentId}/${courseId}`;
-                form.submit();
+   function confirmDelete(studentId, courseId) {
+    Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "سيتم حذف الطالب من هذه الدورة!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'نعم، احذف',
+        cancelButtonText: 'إلغاء'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            // Build the URL with the correct base
+            const actionUrl = "<?php echo e(url('/delete-student-course')); ?>/" + studentId + "/" + courseId;
+
+            // Create form
+            let form = document.getElementById('deleteCourseForm');
+            if (!form) {
+                form = document.createElement('form');
+                form.id = 'deleteCourseForm';
+                form.method = 'POST';
+                form.style.display = 'none';
+                document.body.appendChild(form);
             }
-        });
-    }
+
+            form.action = actionUrl;
+
+            // ✅ Add CSRF token
+            let csrfInput = form.querySelector('input[name="_token"]');
+            if (!csrfInput) {
+                csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                form.appendChild(csrfInput);
+            }
+            csrfInput.value = "<?php echo e(csrf_token()); ?>";
+
+            // ✅ Add _method=DELETE to spoof DELETE
+            let methodInput = form.querySelector('input[name="_method"]');
+            if (!methodInput) {
+                methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                form.appendChild(methodInput);
+            }
+            methodInput.value = 'DELETE';
+
+            form.submit();
+        }
+    });
+}
+
+
+
 
     // ==========================================
     // LOAD COURSES BY NUMBER
@@ -1544,9 +1574,11 @@ DELETE MODAL (only in edit mode)
                         </td>
                         <td><span class="status-badge warning">${data.course.price} ل.س</span></td>
                         <td>
-                            <button class="table-action-btn btn-danger-sm" onclick="confirmDelete(${studentId}, ${data.course.id})">
-                                <i class="fas fa-trash-alt"></i> حذف
-                            </button>
+                           <button type="button"
+        class="table-action-btn btn-danger-sm"
+        onclick="confirmDelete(${studentId}, ${data.course.id})">
+    <i class="fas fa-trash-alt"></i> حذف
+</button>
                             <button class="table-action-btn btn-primary-sm" onclick="showTransferModal(${studentId}, ${data.course.id}, '${data.course.coursenumber}', '${data.course.subject_name}')">
                                 <i class="fas fa-exchange-alt"></i> نقل
                             </button>

@@ -21,7 +21,7 @@
             vertical-align: middle;
             padding: 8px;
             border: 1px solid #ddd;
-            font-size: 15px;   /* ← bigger on-screen font */
+            font-size: 22px;
         }
 
         th {
@@ -192,6 +192,7 @@ function getBranchName(courseName) {
                'اكريليك', 'أكريليك', 'إكريليك', 'اكريللك', 'أكريللك',
   'رموش تجميليه', 'رموش تجميلية', 'رموش تجميلى', 'رموش تجميلي',
     'رموش تجميله', 'رموش تجميلة', 'الرموش التجميليه', 'الرموش التجميلة',
+    'سهرة وعرايسي','TOT'
 
 
     ];   // تحويل اسم الدورة إلى نص للتأكد (وتوحيد حالة الأحرف اختياري)
@@ -211,141 +212,316 @@ function getBranchName(courseName) {
     title: '',
     messageTop: '',
     messageBottom: '',
-    customize: function (win) {
+//     customize: function (win) {
 
-        win.document.title = 'تقرير القوائم';
+//         win.document.title = 'تقرير القوائم';
 
-        $(win.document.body).empty();
-        $(win.document.body).css('margin-top', '20px');
+//         $(win.document.body).empty();
+//         $(win.document.body).css('margin-top', '20px');
 
-        // Data from PHP
-        var pageNumber = '{{ $page_number ?? "" }}';
-        var year = '{{ date("Y") }}';
-        var courseName = '{{ $courseInfo->course_name ?? "" }}';
-        var courseDays = '{{ $courseInfo->days_of_course ?? "" }}';
-        var startHour = formatTo12Hour('{{ $courseInfo->start_hour ?? "" }}');
-        var endHour = formatTo12Hour('{{ $courseInfo->end_hour ?? "" }}');
-        var branchName = getBranchName(courseName);
-        var studentsData = @json($students);
+//         // Data from PHP
+//         var pageNumber = '{{ $page_number ?? "" }}';
+//         var year = '{{ date("Y") }}';
+//         var courseName = '{{ $courseInfo->course_name ?? "" }}';
+//         var courseDays = '{{ $courseInfo->days_of_course ?? "" }}';
+//         var startHour = formatTo12Hour('{{ $courseInfo->start_hour ?? "" }}');
+//         var endHour = formatTo12Hour('{{ $courseInfo->end_hour ?? "" }}');
+//         var branchName = getBranchName(courseName);
+//         var studentsData = @json($students);
+//         var departmentName = '{{ $courseInfo->department_name ?? "" }}';
 
-        $(win.document.body).css('direction', 'rtl');
-        $(win.document.body).css('font-family', 'Arial');
-        $(win.document.body).css('font-size', '12px'); // base font smaller
+//         $(win.document.body).css('direction', 'rtl');
+//         $(win.document.body).css('font-family', 'Arial');
+//         $(win.document.body).css('font-size', '12px'); // base font smaller
 
-        // Header
-        $(win.document.body).prepend(`
-            <div style="text-align:center; margin-bottom:10px;">
-                <h2 style="margin:0; font-size:18px;">مركز المأمون الدولي للتدريب على الحرف والمهن</h2>
+//         // Header
+//         $(win.document.body).prepend(`
+//             <div style="text-align:center; margin-bottom:10px;">
+//                 <h2 style="margin:0; font-size:18px;">مركز المأمون الدولي للتدريب على الحرف والمهن</h2>
+//             </div>
+//             <div style="text-align:right; margin-bottom:10px;">
+//                 <p style="margin:0;font-weight:bold;">الجمعية الحرفية لمراكز التدريب</p>
+//                 <p style="margin:0;font-weight:bold;">المهني والحرفي بدمشق وريفها</p>
+//             </div>
+//             <div style="width:100%; overflow:hidden; margin-bottom:15px;">
+//                 <table style="width:25%; border-collapse:collapse; float:right; font-size:12px;">
+//                     <tr>
+//                         <td style="border:1px solid black; padding:4px;">الرقم</td>
+//                         <td style="border:1px solid black; padding:4px;">${pageNumber}</td>
+//                     </tr>
+//                     <tr>
+//                         <td style="border:1px solid black; padding:4px;">السنة</td>
+//                         <td style="border:1px solid black; padding:4px;">${year}</td>
+//                     </tr>
+//                 </table>
+//                 <div style="float:left;">
+//                     <img src="{{ asset('images/logo.png') }}" style="width:100px;">
+//                 </div>
+//             </div>
+//             <div style="text-align:center; margin:15px 0; clear:both;">
+//                 <p style="margin:3px 0; font-weight:bold; font-size:14px;">إلى رئيس الجمعية الحرفية</p>
+// <p style="margin:3px 0; font-weight:bold; font-size:14px;">نعلمكم بافتتاح دورة ${departmentName}(${courseName}) في مركزنا (${branchName})</p>                <p style="margin:3px 0; font-weight:bold; font-size:14px;">أيام الدورة (${courseDays})</p>
+//                 <p style="margin:3px 0; font-weight:bold; font-size:14px;">وقت الدورة من الساعة (${startHour}) إلى الساعة (${endHour})</p>
+//             </div>
+//         `);
+
+//         // Create print table
+//         var newTable = $('<table border="1" style="width:100%; border-collapse:collapse; font-size:13px;"></table>');
+//         newTable.append(`
+//             <thead>
+//                 <tr>
+//                     <th style="padding:3px;">المدينة</th>
+//                     <th style="padding:3px;">اسم المركز</th>
+//                     <th style="padding:3px;">اسم الدورة</th>
+//                     <th style="padding:3px;">الاسم والشهرة</th>
+//                     <th style="padding:3px;">اسم الأب</th>
+//                     <th style="padding:3px;">اسم الأم</th>
+//                     <th style="padding:3px;">رقم الموبايل</th>
+
+//                     <th style="padding:3px;">تاريخ الميلاد</th>
+//                     <th style="padding:3px; min-width:80px;">الرقم الوطني</th>
+//                     <th style="padding:3px;">الجنسية</th>
+//                     <th style="padding:3px;">بداية الدورة</th>
+//                     <th style="padding:3px;">نهاية الدورة</th>
+//                     <th style="padding:3px;">هل الشهادة مطلوبة</th>
+//                     <th style="padding:3px;">اسم المدرب</th>
+//                     <th style="padding:3px;">الرقم العام</th>
+//                 </tr>
+//             </thead>
+//         `);
+
+//         var tbody = $('<tbody></tbody>');
+//         // Loop over studentsData (from PHP)
+//         studentsData.forEach(function(student) {
+//             var eligible = student.certificate_eligible ? 'نعم' : 'لا';
+//             var fullname = (student.firstname || '') + ' ' + (student.lastname || '');
+//             tbody.append(`
+//                 <tr>
+//                     <td style="padding:3px;">دمشق</td>
+//                     <td style="padding:3px;">مركز المأمون</td>
+//                     <td style="padding:3px;">${courseName}</td>
+//                     <td style="padding:3px;">${fullname}</td>
+//                     <td style="padding:3px;">${student.fathername || ''}</td>
+//                     <td style="padding:3px;">${student.mothername || ''}</td>
+//                     <td style="padding:3px;">${student.mobile || ''}</td>
+//                     <td style="padding:3px;">${student.date_of_birth || ''}</td>
+//                     <td style="padding:3px; white-space:nowrap;">${student.national_number || ''}</td>
+//                     <td style="padding:3px;">${student.nationality || ''}</td>
+//                     <td style="padding:3px;">${student.start_date || ''}</td>
+//                     <td style="padding:3px;">${student.end_date || ''}</td>
+//                     <td style="padding:3px; font-weight:bold;">${eligible}</td>
+//                     <td style="padding:3px;">${student.teacherfull || ''}</td>
+//                     <td style="padding:3px;">${student.page_number || ''}</td>
+//                 </tr>
+//             `);
+//         });
+
+//         newTable.append(tbody);
+//         $(win.document.body).find('table.dataTable').remove();
+//         $(win.document.body).append(newTable);
+
+//         // Footer
+//         newTable.after(`
+//             <div style="margin-top:20px; width:100%; font-size:16px; display:flex; justify-content:center; gap:500px; direction:rtl; color:#000;">
+//                 <div style="text-align:right; font-weight:900;">قسم الشهادات</div>
+//                 <div style="text-align:center; font-weight:900;">المهندس مأمون الحلاق<br>المدير العام لمركز المأمون الدولي</div>
+//             </div>
+//         `);
+
+//         // Print styles to ensure table fits
+//         $(win.document.head).append(`
+//             <style>
+//                 @page {
+//                     size: A4 landscape;
+//                     margin: 0;
+//                 }
+//                 @media print {
+//                     body { margin: 10px; padding: 10px; }
+//                     table { border-collapse: collapse; width: 100%; }
+//                     th, td { border: 1px solid black; padding: 3px; text-align: center; font-size: 12px; }
+//                     thead { display: table-header-group; }
+//                     tfoot { display: table-footer-group; }
+//                     tr { page-break-inside: avoid; }
+//                 }
+//             </style>
+//         `);
+
+//                     }
+customize: function (win) {
+
+    win.document.title = 'تقرير القوائم';
+
+    $(win.document.body).empty();
+    $(win.document.body).css('margin', '0');
+    $(win.document.body).css('padding', '0');
+    $(win.document.body).css('direction', 'rtl');
+    $(win.document.body).css('font-family', 'Tahoma, Arial, sans-serif');
+    $(win.document.body).css('font-size', '12px');
+    $(win.document.body).css('color', '#111');
+
+    // Data from PHP
+    var pageNumber     = '{{ $page_number ?? "" }}';
+    var year           = '{{ date("Y") }}';
+    var courseName     = '{{ $courseInfo->course_name ?? "" }}';
+    var courseDays     = '{{ $courseInfo->days_of_course ?? "" }}';
+    var startHour      = formatTo12Hour('{{ $courseInfo->start_hour ?? "" }}');
+    var endHour        = formatTo12Hour('{{ $courseInfo->end_hour ?? "" }}');
+    var branchName     = getBranchName(courseName);
+    var studentsData   = @json($students);
+    var departmentName = '{{ $courseInfo->department_name ?? "" }}';
+
+    // Header
+    $(win.document.body).prepend(`
+        <div style="text-align:center; margin-bottom:2px;">
+            <h2 style="margin:0; font-size:18px; font-weight:900; color:#1a1a2e;">مركز المأمون الدولي للتدريب على الحرف والمهن</h2>
+            <div style="height:2px; background:#1a1a2e; width:60%; margin:6px auto 0;"></div>
+        </div>
+        <div style="text-align:right; margin-bottom:2px; line-height:1.4;">
+            <p style="margin:0; font-weight:bold; font-size:12px;">الجمعية الحرفية لمراكز التدريب</p>
+            <p style="margin:0; font-weight:bold; font-size:12px;">المهني والحرفي بدمشق وريفها</p>
+        </div>
+        <div style="width:100%; overflow:hidden; margin-bottom:2px;">
+            <table style="width:18%; border-collapse:collapse; float:right; font-size:11px; background:#f4f6fa;">
+                 <tr>
+                <td style="border:1px solid #333; padding:1px 3px; font-weight:bold; background:#e8edf5; font-size:11px; line-height:1.2;">الرقم</td>
+                <td style="border:1px solid #333; padding:1px 3px; text-align:center; font-size:11px; line-height:1.2;">${pageNumber}</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #333; padding:1px 3px; font-weight:bold; background:#e8edf5; font-size:11px; line-height:1.2;">السنة</td>
+                <td style="border:1px solid #333; padding:1px 3px; text-align:center; font-size:11px; line-height:1.2;">${year}</td>
+            </tr>
+            </table>
+            <div style="float:left; padding-top:3px;">
+                <img src="{{ asset('images/logo.png') }}" style="width:100px;">
             </div>
-            <div style="text-align:right; margin-bottom:10px;">
-                <p style="margin:0;font-weight:bold;">الجمعية الحرفية لمراكز التدريب</p>
-                <p style="margin:0;font-weight:bold;">المهني والحرفي بدمشق وريفها</p>
-            </div>
-            <div style="width:100%; overflow:hidden; margin-bottom:15px;">
-                <table style="width:25%; border-collapse:collapse; float:right; font-size:12px;">
-                    <tr>
-                        <td style="border:1px solid black; padding:4px;">الرقم</td>
-                        <td style="border:1px solid black; padding:4px;">${pageNumber}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid black; padding:4px;">السنة</td>
-                        <td style="border:1px solid black; padding:4px;">${year}</td>
-                    </tr>
-                </table>
-                <div style="float:left;">
-                    <img src="{{ asset('images/logo.png') }}" style="width:100px;">
-                </div>
-            </div>
-            <div style="text-align:center; margin:15px 0; clear:both;">
-                <p style="margin:3px 0; font-weight:bold; font-size:14px;">إلى رئيس الجمعية الحرفية</p>
-                <p style="margin:3px 0; font-weight:bold; font-size:14px;">نعلمكم بافتتاح دورة (${courseName}) في مركزنا (${branchName})</p>
-                <p style="margin:3px 0; font-weight:bold; font-size:14px;">أيام الدورة (${courseDays})</p>
-                <p style="margin:3px 0; font-weight:bold; font-size:14px;">وقت الدورة من الساعة (${startHour}) إلى الساعة (${endHour})</p>
-            </div>
+        </div>
+        <div style="text-align:center; margin:0 0 0px 0; clear:both; line-height:1;">
+            <p style="margin:3px 0; font-weight:bold; font-size:14px; text-decoration:underline;">إلى رئيس الجمعية الحرفية</p>
+            <p style="margin:3px 0; font-weight:bold; font-size:14px;">نعلمكم بافتتاح دورة ${departmentName} (${courseName}) في مركزنا (${branchName})</p>
+            <p style="margin:3px 0; font-weight:bold; font-size:14px;">أيام الدورة (${courseDays})</p>
+            <p style="margin:3px 0; font-weight:bold; font-size:14px;">وقت الدورة من الساعة (${startHour}) إلى الساعة (${endHour})</p>
+        </div>
+
+    `);
+
+    // Create print table (نفس الأعمدة والبيانات بدون تغيير)
+    var newTable = $('<table class="print-data-table" border="1" style="width:100%; border-collapse:collapse; font-size:13px;"></table>');
+    newTable.append(`
+        <thead>
+            <tr>
+                <th style="padding:3px;">المدينة</th>
+                <th style="padding:3px;">اسم المركز</th>
+                <th style="padding:3px;">اسم الدورة</th>
+                <th style="padding:3px;">الاسم والشهرة</th>
+                <th style="padding:3px;">اسم الأب</th>
+                <th style="padding:3px;">اسم الأم</th>
+                <th style="padding:3px;">رقم الموبايل</th>
+                <th style="padding:3px;">تاريخ الميلاد</th>
+                <th style="padding:3px; min-width:80px;">الرقم الوطني</th>
+                <th style="padding:3px;">الجنسية</th>
+                <th style="padding:3px;">بداية الدورة</th>
+                <th style="padding:3px;">نهاية الدورة</th>
+                <th style="padding:3px;">هل الشهادة مطلوبة</th>
+                <th style="padding:3px;">اسم المدرب</th>
+                <th style="padding:3px;">الرقم العام</th>
+            </tr>
+        </thead>
+    `);
+
+    var tbody = $('<tbody></tbody>');
+    studentsData.forEach(function(student) {
+        var eligible = student.certificate_eligible ? 'نعم' : 'لا';
+        var fullname = (student.firstname || '') + ' ' + (student.lastname || '');
+        tbody.append(`
+            <tr>
+                <td style="padding:3px;">دمشق</td>
+                <td style="padding:3px;">مركز المأمون</td>
+                <td style="padding:3px;">${courseName}</td>
+                <td style="padding:3px;">${fullname}</td>
+                <td style="padding:3px;">${student.fathername || ''}</td>
+                <td style="padding:3px;">${student.mothername || ''}</td>
+                <td style="padding:3px;">${student.mobile || ''}</td>
+                <td style="padding:3px;">${student.date_of_birth || ''}</td>
+                <td style="padding:3px; white-space:nowrap;">${student.national_number || ''}</td>
+                <td style="padding:3px;">${student.nationality || ''}</td>
+                <td style="padding:3px;">${student.start_date || ''}</td>
+                <td style="padding:3px;">${student.end_date || ''}</td>
+                <td style="padding:3px; font-weight:bold;">${eligible}</td>
+                <td style="padding:3px;">${student.teacherfull || ''}</td>
+                <td style="padding:3px;">${student.page_number || ''}</td>
+            </tr>
         `);
+    });
 
-        // Create print table
-        var newTable = $('<table border="1" style="width:100%; border-collapse:collapse; font-size:13px;"></table>');
-        newTable.append(`
-            <thead>
-                <tr>
-                    <th style="padding:3px;">المدينة</th>
-                    <th style="padding:3px;">اسم المركز</th>
-                    <th style="padding:3px;">اسم الدورة</th>
-                    <th style="padding:3px;">الاسم والشهرة</th>
-                    <th style="padding:3px;">اسم الأب</th>
-                    <th style="padding:3px;">اسم الأم</th>
-                    <th style="padding:3px;">رقم الموبايل</th>
+    newTable.append(tbody);
+    $(win.document.body).find('table.dataTable').remove();
+    $(win.document.body).append(newTable);
 
-                    <th style="padding:3px;">تاريخ الميلاد</th>
-                    <th style="padding:3px; min-width:80px;">الرقم الوطني</th>
-                    <th style="padding:3px;">الجنسية</th>
-                    <th style="padding:3px;">بداية الدورة</th>
-                    <th style="padding:3px;">نهاية الدورة</th>
-                    <th style="padding:3px;">هل الشهادة مطلوبة</th>
-                    <th style="padding:3px;">اسم المدرب</th>
-                    <th style="padding:3px;">الرقم العام</th>
-                </tr>
-            </thead>
-        `);
-
-        var tbody = $('<tbody></tbody>');
-        // Loop over studentsData (from PHP)
-        studentsData.forEach(function(student) {
-            var eligible = student.certificate_eligible ? 'نعم' : 'لا';
-            var fullname = (student.firstname || '') + ' ' + (student.lastname || '');
-            tbody.append(`
-                <tr>
-                    <td style="padding:3px;">دمشق</td>
-                    <td style="padding:3px;">مركز المأمون</td>
-                    <td style="padding:3px;">${courseName}</td>
-                    <td style="padding:3px;">${fullname}</td>
-                    <td style="padding:3px;">${student.fathername || ''}</td>
-                    <td style="padding:3px;">${student.mothername || ''}</td>
-                    <td style="padding:3px;">${student.mobile || ''}</td>
-                    <td style="padding:3px;">${student.date_of_birth || ''}</td>
-                    <td style="padding:3px; white-space:nowrap;">${student.national_number || ''}</td>
-                    <td style="padding:3px;">${student.nationality || ''}</td>
-                    <td style="padding:3px;">${student.start_date || ''}</td>
-                    <td style="padding:3px;">${student.end_date || ''}</td>
-                    <td style="padding:3px; font-weight:bold;">${eligible}</td>
-                    <td style="padding:3px;">${student.teacherfull || ''}</td>
-                    <td style="padding:3px;">${student.page_number || ''}</td>
-                </tr>
-            `);
-        });
-
-        newTable.append(tbody);
-        $(win.document.body).find('table.dataTable').remove();
-        $(win.document.body).append(newTable);
-
-        // Footer
-        newTable.after(`
-            <div style="margin-top:20px; width:100%; font-size:16px; display:flex; justify-content:center; gap:250px; direction:rtl; color:#000;">
-                <div style="text-align:right; font-weight:900;">قسم الشهادات</div>
-                <div style="text-align:center; font-weight:900;">المهندس مأمون الحلاق<br>المدير العام لمركز المأمون الدولي</div>
+    // Footer
+    newTable.after(`
+        <div style="margin-top:25px; width:100%; font-size:15px; display:flex; justify-content:space-between; direction:rtl; color:#000; padding:0 40px;">
+            <div style="text-align:right; font-weight:900;">قسم الشهادات</div>
+            <div style="text-align:center; font-weight:900; line-height:1.5;">
+                المهندس مأمون الحلاق<br>
+                <span style="font-weight:700; font-size:13px;">المدير العام لمركز المأمون الدولي</span>
             </div>
-        `);
+        </div>
+    `);
 
-        // Print styles to ensure table fits
-        $(win.document.head).append(`
-            <style>
-                @page {
-                    size: A4 landscape;
+    // Print styles — فقط تنسيق، نفس البنية
+    $(win.document.head).append(`
+        <style>
+            @page {
+                size: A4 landscape;
+                margin: 8mm;
+            }
+            @media print {
+                body {
                     margin: 0;
+                    padding: 5px;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
                 }
-                @media print {
-                    body { margin: 10px; padding: 10px; }
-                    table { border-collapse: collapse; width: 100%; }
-                    th, td { border: 1px solid black; padding: 3px; text-align: center; font-size: 12px; }
-                    thead { display: table-header-group; }
-                    tfoot { display: table-footer-group; }
-                    tr { page-break-inside: avoid; }
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
                 }
-            </style>
-        `);
+                .print-data-table thead th {
+                     background: #ffffff !important;
+    color: #000 !important;
+                    border: 1px solid #1a1a2e !important;
+                    padding: 6px 3px !important;
+                    font-size: 11px !important;
+                    font-weight: 700 !important;
+                    text-align: center !important;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                .print-data-table tbody td {
+                    border: 1px solid #9aa3b3 !important;
+                    padding: 5px 3px !important;
+                    text-align: center !important;
+                    font-size: 11.5px !important;
+                    height: 22px;
+                }
+                .print-data-table tbody tr:nth-child(even) {
+                    background: #f8fafd !important;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                .print-data-table thead { display: table-header-group; }
+                .print-data-table tr    { page-break-inside: avoid; }
+            }
+        </style>
+    `);
 
-                    }
+    // focus & print
+    setTimeout(function () {
+        win.focus();
+        win.print();
+        win.close();
+    }, 50);
+}
 
 
                 },

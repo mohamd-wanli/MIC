@@ -31,6 +31,7 @@ use App\Http\Controllers\PaymentHandoverController;
 Route::get('/', function () {
     return view('auth.login');
 });
+Route::get('/payment/print/{id}', [PaymentController::class, 'printReceipt'])->name('payment.print');
 Route::get('/home', [CourseController::class, 'homeIndex'])->name('home');
 // Route::get('/', function () {
 //     return redirect()->route('home');
@@ -115,7 +116,8 @@ Route::get('Examday_cancele', [ExamDayController::class, 'Examday_cancele']);
 Route::get('Examday_complete', [ExamDayController::class, 'Examday_complete']);
 Route::post('/Status_Update/{id}', [ExamDayController::class, 'Status_Update'])->name('Status_Update');
 
-
+Route::get('/courses/grades-report', [CourseController::class, 'gradesReport'])
+     ->name('courses.gradesReport');
 //SessionNumber Routes
 Route::resource('session_number', SessionNumberController::class);
 Route::get('/show_student/{sessionId}', [SessionNumberController::class, 'showSessionStudents'])->name('sessions.show');

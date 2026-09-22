@@ -44,6 +44,20 @@
                    target="_blank" class="btn-print">
                     <i class="fas fa-print"></i> طباعة
                 </a>
+               <a href="<?php echo e(route('payments.reports.collections.print', request()->all())); ?>"
+   target="_blank"
+   class="btn-print"
+   style="background:linear-gradient(135deg,#667eea,#764ba2);
+          padding: 3px 8px;
+          font-size: 10px;
+          height: 12px;
+          line-height: 18px;
+          border-radius: 5px;
+          gap: 3px;">
+    <i class="fas fa-cash-register" style="font-size:9px;"></i>
+
+</a>
+
             </form>
 
             

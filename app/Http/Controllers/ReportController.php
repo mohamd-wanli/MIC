@@ -84,9 +84,10 @@ public function financialReport(Request $request)
         $student = $paymentsForStudent->first()->student;
         $course = $paymentsForStudent->first()->course;
         $totalPaid = $paymentsForStudent->sum('payment_value');
+        $totalDiscount=$paymentsForStudent->sum('discount');
         $coursePrice = $course->price ?? 0;
-        $discount = $course->discount ?? 0;
-        $netPrice = $coursePrice - $discount;
+
+        $netPrice = $coursePrice - $totalDiscount;
         $remaining = $netPrice - $totalPaid;
 
         $totalExpected += $netPrice;
@@ -98,6 +99,7 @@ public function financialReport(Request $request)
             'totalPaid' => $totalPaid,
             'remaining' => $remaining,
             'payments' => $paymentsForStudent,
+                'totalDiscount' => $totalDiscount,
         ];
     }
 

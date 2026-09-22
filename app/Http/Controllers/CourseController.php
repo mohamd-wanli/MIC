@@ -677,7 +677,24 @@ public function searchByName(Request $request)
 
         return response()->json(['status' => 'success']);
     }
+  public function gradesReport(Request $request)
+{
+   
+      $students = [];
+    $course = Course::where('coursenumber', $request->course_number)
+        ->where('subject_name', 'like', '%' . $request->teacher_name . '%')
+        ->first();
 
+    if ($course) {
+        $students = Student::whereHas('courses', function ($query) use ($course) {
+            $query->where('course_id', $course->id);
+        })->get();
+    }
+
+    abort_if(!$course, 404, 'لم يتم العثور على الدورة');
+
+    return view('report.course_grade', compact('course'));
+}
   public function deleteCourse($id)
 {
     $course = Course::find($id);

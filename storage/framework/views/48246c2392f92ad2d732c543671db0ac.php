@@ -310,25 +310,38 @@
         display: none;
     }
 
-    @media print {
-        /* Hide everything except print area */
-        body * {
-            visibility: hidden;
-        }
+   @media print {
 
-        #print-area,
-        #print-area * {
-            visibility: visible;
-        }
+    @page {
+        size: A4;
+        margin: 0;
+    }
 
-        #print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            padding: 20px;
-            background: #ffffff;
-        }
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Hide everything except print area */
+    body * {
+        visibility: hidden;
+    }
+
+    #print-area,
+    #print-area * {
+        visibility: visible;
+    }
+
+    #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 15mm;
+        background: #ffffff;
+        box-sizing: border-box;
+    }
+
 
         /* Hide scrollbar container and overflow */
         .table-container-modern {
@@ -642,10 +655,7 @@
                         ويرغبون بالحصول على شهادات بقوائم مدمجة، علماً بأننا وافيناكم
                         بصورة عن القوائم بشكل متفرق مسبقاً.
                     </p>
-                    <p style="font-weight: bold; font-size: 16px; color: #667eea;">
-                        رقم المجموعة: <?php echo e(request('group_number')); ?>
-
-                    </p>
+                    
                 </div>
 
                 <!-- ===== TABLE ===== -->
@@ -690,7 +700,7 @@
                                     </td>
                                     <td><?php echo e($student->start_date ?? '—'); ?></td>
                                     <td><?php echo e($student->end_date ?? '—'); ?></td>
-                                    <td><?php echo e($student->teacher_name ?? '—'); ?></td>
+                                    <td><?php echo e($student->teacherName ?? '—'); ?></td>
                                     <td>
                                         <?php if($student->certificate_number): ?>
                                             <span class="cert-number"><?php echo e($student->certificate_number); ?></span>

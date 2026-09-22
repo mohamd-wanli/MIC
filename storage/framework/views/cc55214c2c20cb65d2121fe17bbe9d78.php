@@ -27,13 +27,21 @@
 
     <h2>مركز المأمون الدولي</h2>
     <div class="meta">
-        <?php echo e($title); ?><br>
-        <?php echo e($subtitle); ?><br>
-        تاريخ الطباعة: <?php echo e(now()->format('Y-m-d H:i')); ?>
+    <?php echo e($title); ?><br>
+    <?php echo e($subtitle); ?><br>
 
-        — بواسطة: <?php echo e(auth()->user()->name); ?>
+    <?php if(request('department_id')): ?>
+        <?php
+            $deptName = \App\Models\Department::find(request('department_id'))?->name;
+        ?>
+        <strong>القسم: <?php echo e($deptName); ?></strong><br>
+    <?php endif; ?>
 
-    </div>
+    تاريخ الطباعة: <?php echo e(now()->format('Y-m-d H:i')); ?>
+
+    — بواسطة: <?php echo e(auth()->user()->name); ?>
+
+</div>
 
     <div class="summary">
         <div>
@@ -54,8 +62,11 @@
                 <th>تاريخ التحصيل</th>
                 <th>الطالب</th>
                 <th>الدورة</th>
+                 <th>رقم الدورة</th>
                 <th>المبلغ</th>
-                <th>القسم</th>
+                <th>الحسم</th>
+                <th>نوع الدفعة</th>
+
                 
             </tr>
         </thead>
@@ -67,8 +78,10 @@
                     <td><?php echo e($p->collected_at ? $p->collected_at->format('Y-m-d') : '—'); ?></td>
                     <td><?php echo e($p->student->fullname ?? '—'); ?></td>
                     <td><?php echo e($p->course->subject_name ?? '—'); ?></td>
+                   <td><?php echo e($p->course->coursenumber ?? '—'); ?></td>
                     <td><?php echo e(number_format($p->payment_value)); ?> ل.س</td>
-                    <td><?php echo e($p->department->name ?? '—'); ?></td>
+                    <td><?php echo e($p->discount); ?></td>
+                    <td><?php echo e($p->payment_category); ?></td>
                     
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -89,4 +102,4 @@
 
 </body>
 </html>
-<?php /**PATH C:\Users\wanli\Desktop\mic\resources\views\payments\reports\print_document.collection.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\wanli\Desktop\mic\resources\views\payments\reports\print_collection.blade.php ENDPATH**/ ?>

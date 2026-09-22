@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Student;
 use App\Models\Course;
-
+use App\Models\Payment;
 
 class PrintController extends Controller
 {
+
+
 public function printInvoices(Request $request)
     {
         $query = Invoice::with('student');
@@ -55,5 +57,8 @@ public function printStudentsByCourse(Request $request)
     $students = Student::all(); // جلب جميع الطلاب من قاعدة البيانات
     return view('print.printicdl', compact('students'));
 }
+// In PaymentController.php
+
+
 
 }

@@ -226,17 +226,7 @@
         </table>
 
         <!-- Overall Dates -->
-       <!-- Overall Dates -->
-<table class="inner-table" style="margin-top: 15px;">
-    <tr>
-        <th style="width:50%;">تاريخ البداية الكلي</th>
-        <th style="width:50%;">تاريخ النهاية الكلي</th>
-    </tr>
-    <tr>
-        <td><?php echo e($course->start_date ?? '-'); ?></td>
-        <td><?php echo e($course->end_date ?? '-'); ?></td>
-    </tr>
-</table>
+       
 
         <!-- Student Signature -->
         <div class="section">

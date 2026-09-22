@@ -420,7 +420,7 @@
                     $course = $summary->course;
                     $totalPaid = $summary->totalPaid;
                     $remaining = $summary->remaining;
-                    $discount = $course->discount ?? 0;
+                    $discount = $summary->totalDiscount ?? 0;
                     $coursePrice = $course->price ?? 0;
                 ?>
 

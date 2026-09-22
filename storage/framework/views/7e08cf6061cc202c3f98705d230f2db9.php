@@ -1,1 +1,0 @@
-<?php echo e($courses->appends(request()->all())->links()); ?><?php /**PATH C:\Users\wanli\Desktop\mic\resources\views/course/partials/pagination.blade.php ENDPATH**/ ?>

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,14 +12,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::table('stucourse', function (Blueprint $table) {
-        // 1. Explicitly drop the constraint first
-        $table->dropForeign(['Student_id']);
 
-        // 2. Rename the column
+
+    Schema::table('stucourse', function (Blueprint $table) {
+        $table->dropForeign('stucourse_Student_id');
+    });
+
+    Schema::table('stucourse', function (Blueprint $table) {
         $table->renameColumn('Student_id', 'student_id');
+    });
 
-        // 3. Re-add the constraint on the new column name
+         Schema::table('stucourse', function (Blueprint $table) {
         $table->foreign('student_id')
               ->references('id')
               ->on('students');
