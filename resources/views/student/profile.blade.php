@@ -829,12 +829,28 @@
                     </table>
                 </div>
 
-                <div class="text-center mt-4">
+                {{-- <div class="text-center mt-4">
                     <button type="submit" class="btn-submit-modern">
                         <i class="fas fa-save"></i>
                         {{ isset($isCreating) ? 'إضافة الطالب' : 'تحديث البيانات' }}
                     </button>
-                </div>
+                </div> --}}
+                <div class="text-center mt-4 d-flex justify-content-center gap-2 flex-wrap">
+    <button type="submit" class="btn-submit-modern">
+        <i class="fas fa-save"></i>
+        {{ isset($isCreating) ? 'إضافة الطالب' : 'تحديث البيانات' }}
+    </button>
+
+    @if(!isset($isCreating))
+        <a href="{{ route('student.print.profile', $students->id) }}"
+           target="_blank"
+           class="btn-submit-modern"
+           style="background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 4px 15px rgba(17, 153, 142, 0.35);">
+            <i class="fas fa-print"></i>
+            طباعة معلومات الطالب
+        </a>
+    @endif
+</div>
             </form>
 
             <!-- ==========================================
@@ -1077,13 +1093,94 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
             </select>
         </div>
     </div>
-    <div class="col-md-2">
+    {{-- <div class="col-md-2">
         <div class="form-group-modern">
             <label for="paymentValue">قيمة الدفعة (ل.س) <span class="text-danger">*</span></label>
             <input type="number" class="form-control" id="paymentValue" required
                    placeholder="المبلغ" min="1" step="0.01">
         </div>
+    </div> --}}
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="form-group-modern">
+        <label for="paymentValue" style="font-size: 1rem; font-weight: 700;">
+            قيمة الدفعة (ل.س) <span class="text-danger">*</span>
+        </label>
+
+        <div class="d-flex gap-2 align-items-stretch">
+            {{-- Preset dropdown (helper) --}}
+            <select class="form-select" id="paymentValueSelect"
+                    style="flex: 0 0 42%; min-width: 130px; font-size: 0.9rem;">
+                <option value="">-- سعر جاهز --</option>
+                <option value="10000">10,000</option>
+                <option value="15000">15,000</option>
+                <option value="20000">20,000</option>
+                <option value="25000">25,000</option>
+                <option value="30000">30,000</option>
+                <option value="40000">40,000</option>
+                <option value="50000">50,000</option>
+                <option value="75000">75,000</option>
+                <option value="100000">100,000</option>
+                <option value="150000">150,000</option>
+                <option value="200000">200,000</option>
+                <option value="250000">250,000</option>
+                <option value="300000">300,000</option>
+                <option value="400000">400,000</option>
+                <option value="500000">500,000</option>
+                <option value="750000">750,000</option>
+                <option value="1000000">1,000,000</option>
+                <option value="2000000">2,000,000</option>
+                <option value="3000000">3,000,000</option>
+                <option value="5000000">5,000,000</option>
+                <option value="__remaining__" id="remainingOption"
+                        style="display:none; font-weight:bold; color:#11998e;">
+                    💰 المتبقي كاملاً
+                </option>
+            </select>
+
+            {{-- BIG number input --}}
+            <input type="number" class="form-control" id="paymentValue"
+                   placeholder="أدخل المبلغ"
+                   min="1" step="0.01" required
+                   inputmode="numeric"
+                   style="flex: 1;
+                          font-size: 1rem !important;
+                          font-weight: 800 !important;
+                          height: 52px !important;
+                          text-align: center !important;
+                          letter-spacing: 1px;
+                          color: #11998e !important;
+                          border: 2px solid #11998e !important;
+                          background: #f0fdf9 !important;">
+        </div>
+
+        {{-- Live formatted preview (thousand separators) --}}
+        <div id="amountFormattedPreview"
+             style="display:none;
+                    margin-top: 6px;
+                    text-align: center;
+                    font-size: 1.3rem;
+                    font-weight: 900;
+                    color: #11998e;
+                    letter-spacing: 1.5px;
+                    font-variant-numeric: tabular-nums;">
+        </div>
+
+        {{-- Arabic words preview --}}
+        <small id="amountInWords"
+               style="display:none;
+                      color: #555;
+                      font-weight: 700;
+                      margin-top: 4px;
+                      display: block;
+                      text-align: center;
+                      font-size: 0.9rem;
+                      background: #f8faff;
+                      padding: 4px 8px;
+                      border-radius: 6px;
+                      border: 1px dashed #11998e;">
+        </small>
     </div>
+</div>
          <div class="col-md-2">
                 <div class="form-group-modern">
                     <label for="discount" style="color:#eb3349;">
@@ -1150,39 +1247,7 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
         <th>الإجراءات</th>
                         </tr>
                     </thead>
-                    {{-- <tbody id="paymentsBody">
-                        @php $paymentCount = 1; @endphp
-                        @forelse ($students->payments->sortByDesc('created_at') as $payment)
-                            <tr id="payment-row-{{ $payment->id }}">
-                                <td>{{ $paymentCount++ }}</td>
-                                <td>{{ $payment->course->subject_name ?? '—' }}</td>
-                                <td><strong>{{ number_format($payment->payment_value) }} ج.م</strong></td>
-                                <td>
-                                    <span class="status-badge info">
-                                        @switch($payment->payment_type)
-                                            @case('cash') 💰 نقدي @break
-                                            @case('visa') 💳 وثيقة حضور@break
-                                            @case('bank') 🏦 شهادة@break
-                                            {{-- @case('cheque') 📝 شيك @break --}}
-                                            {{-- @default {{ $payment->payment_type }}
-                                        @endswitch
-                                    </span>
-                                </td>
-                                <td>{{ $payment->created_at ? $payment->created_at->format('Y-m-d h:i A') : '—' }}</td>
-                                <td>
-                                    <button class="table-action-btn btn-danger-sm" onclick="deletePayment({{ $payment->id }}, {{ $students->id }})">
-                                        <i class="fas fa-trash-alt"></i> حذف
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" style="text-align: center; padding: 30px; color: #adb5bd;">
-                                    <i class="fas fa-info-circle"></i> لا توجد مدفوعات مسجلة
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody> --}}
+
                     <tbody id="paymentsBody">
     @php $paymentCount = 1; @endphp
     @forelse ($students->payments->sortByDesc('collected_at') as $payment)
@@ -1259,17 +1324,45 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
             </td>
 
             {{-- Actions --}}
-            <td>
+            {{-- <td>
                 <button class="table-action-btn btn-danger-sm"
                         onclick="deletePayment({{ $payment->id }}, {{ $students->id }})">
                     <i class="fas fa-trash-alt"></i> حذف
                 </button>
-                  <a href="{{ route('payment.print', $payment->id) }}" 
-       target="_blank" 
+                  <a href="{{ route('payment.print', $payment->id) }}"
+       target="_blank"
        class="table-action-btn btn-primary-sm">
         <i class="fas fa-print"></i> طباعة
     </a>
-            </td>
+            </td> --}}
+
+            {{-- Actions --}}
+<td>
+    <button class="table-action-btn btn-warning-sm"
+            onclick="openEditPaymentModal({
+                id: {{ $payment->id }},
+                receipt_number: '{{ addslashes($payment->receipt_number) }}',
+                collected_at: '{{ $payment->collected_at ? $payment->collected_at->format('Y-m-d') : '' }}',
+                payment_category: '{{ $payment->payment_category ?? 'course' }}',
+                course_id: '{{ $payment->course_id ?? '' }}',
+                payment_value: '{{ $payment->payment_value }}',
+                discount: '{{ $payment->discount ?? 0 }}',
+                payment_type: '{{ $payment->payment_type }}'
+            })">
+        <i class="fas fa-edit"></i> تعديل
+    </button>
+
+    <button class="table-action-btn btn-danger-sm"
+            onclick="deletePayment({{ $payment->id }}, {{ $students->id }})">
+        <i class="fas fa-trash-alt"></i> حذف
+    </button>
+
+    <a href="{{ route('payment.print', $payment->id) }}"
+       target="_blank"
+       class="table-action-btn btn-primary-sm">
+        <i class="fas fa-print"></i> طباعة
+    </a>
+</td>
         </tr>
     @empty
         <tr>
@@ -1439,24 +1532,202 @@ DELETE MODAL (only in edit mode)
 </div>
 @endif
 
+{{-- ==========================================
+EDIT PAYMENT MODAL
+========================================== --}}
+@if(!isset($isCreating))
+<div class="modal fade" id="editPaymentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border: none; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+
+            <div class="modal-header" style="background: linear-gradient(135deg, #f7971e, #ffd200); padding: 18px 26px; border: none;">
+                <h5 class="modal-title" style="color: #2d3436; font-weight: 700;">
+                    <i class="fas fa-edit"></i> تعديل الدفعة
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="editPaymentForm">
+                @csrf
+                <input type="hidden" id="edit_payment_id">
+
+                <div class="modal-body" style="padding: 22px 26px;">
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <div class="form-group-modern">
+                                <label>رقم الوصل <span class="text-danger">*</span></label>
+                                <input type="text" id="edit_receipt_number" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group-modern">
+                                <label>تاريخ التحصيل <span class="text-danger">*</span></label>
+                                <input type="date" id="edit_collected_at" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group-modern">
+                                <label>نوع الدفعة <span class="text-danger">*</span></label>
+                                <select id="edit_payment_category" class="form-select" required>
+                                    <option value="course">دفعة دورة</option>
+                                    <option value="certificate">دفعة شهادة</option>
+                                    <option value="other">دفعة أخرى (رسوم، ...)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" id="edit_course_wrapper">
+                            <div class="form-group-modern">
+                                <label>اختر الدورة <span class="text-danger" id="edit_course_required">*</span></label>
+                                <select id="edit_course_id" class="form-select">
+                                    <option value="">-- اختر دورة --</option>
+                                    @foreach ($students->courses as $course)
+                                        <option value="{{ $course->id }}">
+                                            {{ $course->coursenumber }} - {{ $course->subject_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group-modern">
+                                <label>قيمة الدفعة (ل.س) <span class="text-danger">*</span></label>
+                                <input type="number" id="edit_payment_value" class="form-control"
+                                       min="0" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group-modern">
+                                <label style="color:#eb3349;">
+                                    <i class="fas fa-percent"></i> الحسم (ل.س)
+                                </label>
+                                <input type="number" id="edit_discount" class="form-control"
+                                       min="0" step="0.01" value="0">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group-modern">
+                                <label>نوع الدفع <span class="text-danger">*</span></label>
+                                <select id="edit_payment_type" class="form-select" required>
+                                    <option value="cash">💰 نقدي</option>
+                                    <option value="visa">💳 وثيقة حضور</option>
+                                    <option value="bank">🏦 شهادة</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="padding: 16px 26px; border-top: 1px solid #eef2f7; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            style="border-radius: 50px; padding: 8px 26px; font-weight: 600;">
+                        إلغاء
+                    </button>
+                    <button type="submit" id="editSubmitBtn"
+                            class="table-action-btn btn-success-sm"
+                            style="padding: 9px 30px; font-size: 0.9rem;">
+                        <i class="fas fa-save"></i> حفظ التعديلات
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+@endif
+
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // ==========================================
-    // DELETE MODAL (only if element exists)
+
+// ==========================================
+// PAYMENT AMOUNT — Dropdown + Input sync
+// ==========================================
+     var paymentValueSelect    = document.getElementById('paymentValueSelect');
+     var paymentValueInput     = document.getElementById('paymentValue');
+     var amountFormattedPreview= document.getElementById('amountFormattedPreview');
+     var amountInWords         = document.getElementById('amountInWords');
+     var amountWordsTimer;
+
+
+// 1) Dropdown → fills the input
+        if (paymentValueSelect && paymentValueInput) {
+            paymentValueSelect.addEventListener('change', function () {
+                var val = this.value;
+               if (!val) return;
+
+               if (val === '__remaining__') {
+                   var remaining = parseFloat(this.dataset.remaining || 0);
+                   paymentValueInput.value = remaining ? remaining.toFixed(2) : '';
+               } else {
+                   paymentValueInput.value = val;
+               }
+
+               // Reset dropdown back to placeholder
+              this.value = '';
+
+              // Trigger preview update
+              paymentValueInput.dispatchEvent(new Event('input'));
+          });
+}
+
+// 2) Number input → live formatted preview + words
+          if (paymentValueInput) {
+          paymentValueInput.addEventListener('input', function () {
+              var raw = this.value.replace(/,/g, '');
+              var num = parseFloat(raw) || 0;
+
+              clearTimeout(amountWordsTimer);
+
+              // Big formatted preview
+              if (num > 0) {
+                  amountFormattedPreview.textContent = num.toLocaleString('en-US') + ' ل.س';
+                  amountFormattedPreview.style.display = 'block';
+              } else {
+                  amountFormattedPreview.style.display = 'none';
+              }
+
+              // Arabic words preview (debounced)
+              if (num <= 0) {
+                  amountInWords.style.display = 'none';
+                  return;
+              }
+
+              amountWordsTimer = setTimeout(function () {
+                  fetch(`/api/number-to-words/${num}`)
+                      .then(r => r.json())
+                      .then(data => {
+                          amountInWords.textContent = `${data.words} ليرة سورية فقط`;
+                          amountInWords.style.display = 'block';
+                      })
+                      .catch(() => {
+                          amountInWords.style.display = 'none';
+                      });
+              }, 400);
+          });
+         }
+          // ==========================================
+          // DELETE MODAL (only if element exists)
     // ==========================================
    var deleteModal = document.getElementById('deleteModal');
-if (deleteModal) {
+   if (deleteModal) {
     deleteModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
         var studentId = button.getAttribute('data-id');
         var form = deleteModal.querySelector('#deleteForm');
         form.action = "{{ url('/student') }}/" + studentId;
     });
-}
+   }
 
     // ==========================================
     // CONFIRM DELETE FROM COURSE
@@ -1909,11 +2180,11 @@ if (!collectedAt) {
                             timer: 1500,
                             showConfirmButton: false
                         });
-                          if (data.payment && data.payment.id) {
-            setTimeout(() => {
-                window.open('/payment/print/' + data.payment.id, '_blank');
-            }, 800);
-        }
+            //               if (data.payment && data.payment.id) {
+            // setTimeout(() => {
+            //     window.open('/payment/print/' + data.payment.id, '_blank');
+            // }, 800);
+        // }
                         var formDiv = document.getElementById('addPaymentForm');
                         if (formDiv) formDiv.style.display = 'none';
                         var btn = document.getElementById('addPaymentButton');
@@ -1992,6 +2263,123 @@ if (!collectedAt) {
             }
         });
     }
+
+    // ==========================================
+// EDIT PAYMENT MODAL
+// ==========================================
+var editPaymentModalEl = document.getElementById('editPaymentModal');
+var editPaymentModal = editPaymentModalEl ? new bootstrap.Modal(editPaymentModalEl) : null;
+
+function openEditPaymentModal(data) {
+    if (!editPaymentModal) return;
+
+    document.getElementById('edit_payment_id').value         = data.id;
+    document.getElementById('edit_receipt_number').value      = data.receipt_number || '';
+    document.getElementById('edit_collected_at').value        = data.collected_at || '';
+    document.getElementById('edit_payment_category').value    = data.payment_category || 'course';
+    document.getElementById('edit_course_id').value           = data.course_id || '';
+    document.getElementById('edit_payment_value').value       = data.payment_value || 0;
+    document.getElementById('edit_discount').value            = data.discount || 0;
+    document.getElementById('edit_payment_type').value        = data.payment_type || 'cash';
+
+    toggleEditCourseVisibility();
+
+    editPaymentModal.show();
+}
+
+// Show/hide course field based on category
+function toggleEditCourseVisibility() {
+    var cat = document.getElementById('edit_payment_category').value;
+    var wrap = document.getElementById('edit_course_wrapper');
+    var sel  = document.getElementById('edit_course_id');
+    var req  = document.getElementById('edit_course_required');
+
+    if (cat === 'course') {
+        wrap.style.display = 'block';
+        sel.setAttribute('required', 'required');
+        req.style.display = 'inline';
+    } else {
+        wrap.style.display = 'none';
+        sel.removeAttribute('required');
+        req.style.display = 'none';
+    }
+}
+
+// Listen for category change
+document.getElementById('edit_payment_category')?.addEventListener('change', toggleEditCourseVisibility);
+
+// Submit edit
+document.getElementById('editPaymentForm')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var id            = document.getElementById('edit_payment_id').value;
+    var category      = document.getElementById('edit_payment_category').value;
+    var paymentValue  = parseFloat(document.getElementById('edit_payment_value').value) || 0;
+    var discount      = parseFloat(document.getElementById('edit_discount').value) || 0;
+
+    if (paymentValue <= 0 && discount <= 0) {
+        Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'يجب إدخال قيمة دفعة أو حسم واحد على الأقل' });
+        return;
+    }
+
+    if (category === 'course' && !document.getElementById('edit_course_id').value) {
+        Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'يرجى اختيار دورة' });
+        return;
+    }
+
+    var payload = {
+        receipt_number:   document.getElementById('edit_receipt_number').value.trim(),
+        collected_at:     document.getElementById('edit_collected_at').value,
+        payment_category: category,
+        payment_value:    paymentValue,
+        discount:         discount,
+        payment_type:     document.getElementById('edit_payment_type').value,
+        course_id:        category === 'course'
+                            ? document.getElementById('edit_course_id').value
+                            : null,
+    };
+
+    var submitBtn = document.getElementById('editSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+
+    fetch(`/payment/update/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json().then(json => ({ ok: response.ok, json })))
+    .then(({ ok, json }) => {
+        if (ok && json.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'تم التحديث بنجاح ✅',
+                timer: 1200,
+                showConfirmButton: false
+            });
+            editPaymentModal.hide();
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            throw new Error(json.message || 'فشل تحديث الدفعة');
+        }
+    })
+    .catch(err => {
+        Swal.fire({
+            icon: 'error',
+            title: 'حدث خطأ ❌',
+            text: err.message || 'تعذر تحديث الدفعة',
+            confirmButtonColor: '#eb3349'
+        });
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
+    });
+});
 
     // ==========================================
     // AUTO-CLOSE ALERTS

@@ -891,7 +891,7 @@
                                                class="form-control"
                                                placeholder="الرقم"
                                                required
-                                               min="1">
+                                               min="0">
                                         <button type="submit" class="btn-save">
                                             <i class="fas fa-save"></i>
                                             حفظ

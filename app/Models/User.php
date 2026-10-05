@@ -60,7 +60,8 @@ class User extends Authenticatable
         'password',
         'roles_name',
         'Status',
-        'department_id'
+        'department_id',
+         'remember_token',
     ];
 
     /**

@@ -20,8 +20,58 @@ class PaymentController extends Controller
     // Load the payment with its relationships
     $payment = Payment::with(['student', 'course', 'department', 'enteredBy'])
         ->findOrFail($id);
-    
+
     return view('payments.print_receipt', compact('payment'));
+}
+
+    public function updatePayment(Request $request, $id)
+{
+    $request->validate([
+        'receipt_number'   => 'required|string|max:255',
+        'collected_at'     => 'required|date',
+        'payment_category' => 'required|in:course,certificate,other',
+        'payment_value'    => 'nullable|numeric|min:0',
+        'discount'         => 'nullable|numeric|min:0',
+        'payment_type'     => 'required|string',
+        'course_id'        => 'nullable|exists:courses,id',
+    ]);
+
+    $payment = \App\Models\Payment::find($id);
+
+    if (!$payment) {
+        return response()->json([
+            'success' => false,
+            'message' => 'الدفعة غير موجودة',
+        ], 404);
+    }
+
+    $value    = (float) ($request->payment_value ?? 0);
+    $discount = (float) ($request->discount ?? 0);
+
+    if ($value <= 0 && $discount <= 0) {
+        return response()->json([
+            'success' => false,
+            'message' => 'يجب إدخال قيمة دفعة أو حسم واحد على الأقل',
+        ], 422);
+    }
+
+    $payment->update([
+        'receipt_number'   => $request->receipt_number,
+        'collected_at'     => $request->collected_at,
+        'payment_category' => $request->payment_category,
+        'payment_value'    => $value,
+        'discount'         => $discount,
+        'payment_type'     => $request->payment_type,
+        'course_id'        => $request->payment_category === 'course'
+                                ? $request->course_id
+                                : null,
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'تم تحديث الدفعة بنجاح',
+        'payment' => $payment,
+    ]);
 }
 
 
@@ -75,6 +125,10 @@ if ($paymentValue <= 0 && $discount <= 0) {
             ], 500);
         }
     }
+
+
+
+
   public function deletePayment(int $id)
 {
     try {

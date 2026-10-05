@@ -236,39 +236,112 @@
         .cut-line .scissors { font-size: 12px; }
 
         /* ===== Print overrides ===== */
-        @media print {
-            body {
-                background: #fff;
-                padding: 0;
-                font-size: 11px;
-            }
-            .toolbar { display: none; }
-            .page { max-width: 100%; margin: 0; }
-            .receipt {
-                border: 1.8px solid #000;
-                padding: 6px 12px 5px;
-                page-break-inside: avoid;
-            }
-            .header-center img { height: 38px; }
-            .header-left .ar-name { font-size: 14px; }
-            .header-left .en-name { font-size: 7.5px; }
-            .header-right .h-badge { width: 30px; height: 30px; font-size: 17px; }
-            .row { margin-bottom: 4px; }
-            .body { padding-top: 5px; }
-            .signature-block { margin-top: 6px; }
-            .footer { margin-top: 6px; padding-top: 4px; font-size: 8px; }
-            .footer .contacts { font-size: 8.5px; margin-top: 2px; }
-            .cut-line {
-                margin: 5px 0;
-                color: #666;
-                font-size: 9px;
-            }
-            .cut-line::before,
-            .cut-line::after {
-                border-top: 1.1px dashed #666;
-            }
-        }
+       @media print {
+    @page {
+        size: A4 portrait;
+        margin: 5mm 8mm;
+    }
+
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        height: 100% !important;
+        font-size: 12px !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .toolbar { display: none !important; }
+
+    /* ================================================
+       PAGE = FLEX COLUMN — receipts share height equally
+       ================================================ */
+    .page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        height: 287mm;               /* A4 (297mm) - 2×5mm margins */
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* ================================================
+       EACH RECEIPT STRETCHES TO FILL ITS SHARE
+       ================================================ */
+    .receipt {
+        border: 1.8px solid #000 !important;
+        padding: 12px 16px 10px !important;
+        flex: 1 1 0 !important;       /* equal height for all 3 */
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 0 !important;     /* required for flex shrink */
+        page-break-inside: avoid !important;
+    }
+
+    /* Body fills the free space and distributes rows evenly */
+    .receipt .body {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-evenly !important;   /* spread rows */
+        padding-top: 8px !important;
+    }
+
+    .receipt .body .row,
+    .receipt .body .amount-row {
+        margin-bottom: 0 !important;
+    }
+
+    .receipt .footer {
+        margin-top: 8px !important;
+        padding-top: 6px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .receipt .header {
+        flex-shrink: 0 !important;
+    }
+
+    /* Cut lines keep their small fixed size */
+    .cut-line {
+        flex: 0 0 auto !important;
+        margin: 3px 0 !important;
+        color: #666 !important;
+        font-size: 9px !important;
+    }
+    .cut-line::before,
+    .cut-line::after {
+        border-top: 1.1px dashed #666 !important;
+    }
+
+    /* ================================================
+       SCALE-UP — bigger fonts to fill the space
+       ================================================ */
+    .header-left .ar-name    { font-size: 16px   !important; }
+    .header-left .en-name    { font-size: 9px    !important; }
+    .header-center img       { height: 46px      !important; }
+    .header-right .h-badge   { width: 36px !important; height: 36px !important; font-size: 20px !important; }
+
+    .label                   { font-size: 12.5px !important; padding-bottom: 3px !important; }
+    .value                   { font-size: 13px   !important; min-height: 22px !important; padding: 2px 6px 2px !important; }
+
+    .row                     { gap: 10px !important; }
+    .amount-row              { gap: 8px  !important; }
+
+    .signature-block         { margin-top: 6px !important; }
+
+    .footer                  { font-size: 9.5px !important; }
+    .footer .contacts        { font-size: 10px  !important; }
+
+    .copy-label              { font-size: 10px  !important; padding: 1px 8px !important; }
+}
+
+
+
+
+
     </style>
+
 </head>
 <body>
 
@@ -333,14 +406,16 @@
                     </div>
 
                     
-                    <div class="amount-row">
-                        <span class="label">مبلغ</span>
-                        <span class="value fixed-sm"><?php echo e(number_format((float) $payment->payment_value)); ?></span>
-                        <span class="label">ل.س فقط</span>
-                        <span class="value"><?php echo e(number_format((float) $payment->payment_value)); ?></span>
-                        <span class="label">ليرة سورية لاغير</span>
-                    </div>
+                  <div class="amount-row">
+    <span class="label">مبلغ</span>
+    <span class="value fixed-sm"><?php echo e(number_format((float) $payment->payment_value)); ?></span>
+    <span class="label">ل.س فقط</span>
+    <span class="value">
+        <?php echo e(\App\Helpers\NumberHelper::toWords($payment->payment_value)); ?>
 
+    </span>
+    <span class="label">ليرة سورية لاغير</span>
+</div>
                     
                     <div class="row">
                         <span class="label">وذلك لقاء</span>

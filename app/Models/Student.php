@@ -24,6 +24,7 @@ class Student extends Model
         'lastname',
         'fullname',
         'national_number',
+        'department_id',
     ];
 
     public function marks(): HasOne
@@ -78,8 +79,11 @@ class Student extends Model
 
             // If user has a department, filter students by courses in that department
             if ($user->department_id) {
-                $builder->whereHas('courses', function ($query) use ($user) {
-                    $query->where('dep_id', $user->department_id);
+                $builder->where(function (EloquentBuilder $query) use ($user) {
+                    $query->where('department_id', $user->department_id)
+                        ->orWhereHas('courses', function ($courseQuery) use ($user) {
+                            $courseQuery->where('dep_id', $user->department_id);
+                        });
                 });
             }
         });

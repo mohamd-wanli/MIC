@@ -200,16 +200,19 @@ public function saveAllCourseGrades(Request $request)
 {
     $request->validate([
         'course_id'   => 'required|exists:courses,id',
-        'page_number' => 'required|integer|min:1',
+        'page_number' => 'required|integer',
     ]);
 
      $course = Course::findOrFail($request->course_id);
        $newPage = $request->page_number;
      $students=$course->students;
+
+
     // Check if any student in this course already has a page number
     $hasPageNumber = DB::table('stucourse')
                         ->where('course_id', $course->id)
                         ->whereNotNull('page_number')
+
                         ->exists();
 
 
@@ -221,6 +224,7 @@ public function saveAllCourseGrades(Request $request)
        }
 
 
+
     foreach($students as $student){
         Stucourse::updateOrCreate(
             [
@@ -230,36 +234,6 @@ public function saveAllCourseGrades(Request $request)
             ['page_number'=>$newPage]
         );
     }
-
-    // // Get all students of this course
-    // $students = $course->students()->orderBy('student_id')->get();
-
-    // // If no page number was assigned before, we need to generate general numbers
-    // if (!$hasPageNumber) {
-    //     // Get the last general number for this year
-    //     $courseYear = Carbon::parse($course->end_date)->year;
-    //     $lastGlobalGeneralNumber = DB::table('stucourse')
-    //         ->join('courses', 'stucourse.course_id', '=', 'courses.id')
-    //         ->whereYear('courses.end_date', $courseYear)
-    //         ->max('stucourse.general_number') ?? 0;
-    // }
-
-    // foreach ($students as $student) {
-    //     $data = [
-    //         'page_number' => $newPageNumber,
-    //     ];
-
-        // // Only assign general_number if it's the first time (no page number existed before)
-        // if (!$hasPageNumber) {
-        //     $lastGlobalGeneralNumber++;
-        //     $data['general_number'] = $lastGlobalGeneralNumber;
-        // }
-
-    //     DB::table('stucourse')
-    //         ->where('course_id', $course->id)
-    //         ->where('student_id', $student->id)
-    //         ->update($data);
-    // }
 
     // Remove course from session (as before)
     $selectedCourses = session('selected_courses', []);
@@ -679,7 +653,7 @@ public function searchByName(Request $request)
     }
   public function gradesReport(Request $request)
 {
-   
+
       $students = [];
     $course = Course::where('coursenumber', $request->course_number)
         ->where('subject_name', 'like', '%' . $request->teacher_name . '%')

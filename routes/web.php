@@ -31,6 +31,9 @@ use App\Http\Controllers\PaymentHandoverController;
 Route::get('/', function () {
     return view('auth.login');
 });
+Route::get('/student/{id}/print-profile',
+    [StudentController::class, 'printProfile'])
+    ->name('student.print.profile');
 Route::get('/payment/print/{id}', [PaymentController::class, 'printReceipt'])->name('payment.print');
 Route::get('/home', [CourseController::class, 'homeIndex'])->name('home');
 // Route::get('/', function () {
@@ -91,9 +94,7 @@ Route::resource('student', StudentController::class);
 Route::post('update_status/{id}', [StudentController::class, 'update_status'])->name('update_status');
 Route::get('/deletestu/{id}', [StudentController::class, 'destroy'])->name('deletestudent');
 Route::delete('/delete-student-course/{student_id}/{course_id}', [StudentController::class, 'deleteStudentFromCourse'])->name('deletefromcourse');
-Route::get('/create', [StudentController::class, 'create2'])->name('createstudent');
 Route::post('/store', [StudentController::class, 'store2'])->name("storestudent");
-Route::get('/shows', [StudentController::class, 'index2'])->name('showstudents');
 Route::get('/show/{id}', [StudentController::class, 'show2'])->name('showstudent');
 Route::get('/api/addtocourse', [StudentController::class, 'apiaddtocourse'])->name('apiaddtocourse');
 Route::post('/addtocourse/{id}', [StudentController::class, 'addtocourse'])->name('addtocourse');
@@ -118,15 +119,7 @@ Route::post('/Status_Update/{id}', [ExamDayController::class, 'Status_Update'])-
 
 Route::get('/courses/grades-report', [CourseController::class, 'gradesReport'])
      ->name('courses.gradesReport');
-//SessionNumber Routes
-Route::resource('session_number', SessionNumberController::class);
-Route::get('/show_student/{sessionId}', [SessionNumberController::class, 'showSessionStudents'])->name('sessions.show');
-Route::post('/add_student_to_session', [SessionNumberController::class, 'addStudentToSession'])->name('add_student_to_session');
-Route::get('/get-sessions/{examDayId}', [SessionNumberController::class, 'getSessions']);
-Route::post('/update-student/{id}', [SessionNumberController::class, 'updateStudent'])->name('updateStudent');
-Route::post('/sessions/{sessionId}/students/save-grades', [SessionNumberController::class, 'saveGrades'])->name('sessions.saveGrades');
-Route::delete('/delete-student/{id}', [SessionNumberController::class, 'deleteStudent'])->name('deleteStudent');
-Route::get('/print', [\App\Http\Controllers\ReportController::class, 'printStudents'])->name('print');
+
 
 Route::get('/financial-report', [\App\Http\Controllers\ReportController::class, 'financialReport'])
     ->name('financial.report');
@@ -135,33 +128,11 @@ Route::resource('marks', MarkController::class);
 Route::get('/certifications/export-excel-page', [\App\Http\Controllers\ReportController::class, 'exportExcelPage'])
     ->name('certifications.export.excel.page');
 
-//Invoice Routes
-Route::get('/invoice/create/{stuid}/{coid}', [InvoiceController::class, 'create'])->name('createinv');
-Route::post('/invoice/store', [InvoiceController::class, 'store'])->name('storeinv');
-Route::get('/invoice/edit/{id}', [InvoiceController::class, 'edit'])->name('editinv');
-Route::post('/inv/update/{id}', [InvoiceController::class, 'update'])->name('updateinv');
-Route::get('/invoice/show/{stuid}/{coid}', [InvoiceController::class, 'show'])->name('showinv');
-Route::delete('/invoice/delete/{stuid}/{coid}', [InvoiceController::class, 'destroy'])->name('deleteinv');
-Route::get('/invoice/sale/edit/{stuid}/{coid}', [InvoiceController::class, 'editsale'])->name('editsale');
-Route::post('/invoice/sale/update/{stuid}/{coid}', [InvoiceController::class, 'updatesale'])->name('updatesale');
-Route::get('/check-invoices/{stuid}/{coid}', [InvoiceController::class, 'checkInvoices']);
-Route::post('/invoices/{invoice}/addNote', [InvoiceController::class, 'addNote'])->name('invoices.addNote');
+
 
 Route::get('/reports/payments', [ReportController::class, 'payments'])->name('reports.payments');
 Route::get('/reports/payments/pdf', [ReportController::class, 'paymentsPdf'])->name('reports.payments.pdf');
-// Route::prefix('session-invoices')->group(function () {
-//     Route::get('/create', [SessionInvoiceController::class, 'create'])->name('session-invoice.create');
-//     Route::post('/store', [SessionInvoiceController::class, 'store'])->name('session-invoice.store');
-//     Route::get('/show', [SessionInvoiceController::class, 'show'])->name('session-invoice.show');
-//     Route::post('/update/{id}', [SessionInvoiceController::class, 'update'])->name('session-invoice.update');
-//     Route::delete('/destroy/{stuid}/{session_id}', [SessionInvoiceController::class, 'destroy'])->name('session-invoice.destroy');
-//     Route::get('/session-invoice/edit', [SessionInvoiceController::class, 'edit'])->name('session-invoice.edit');
-//     Route::post('/session-invoice/update/{id}', [SessionInvoiceController::class, 'update'])->name('session-invoice.update');
-//     Route::get('/session-invoice/editsale', [SessionInvoiceController::class, 'editsale'])->name('session-invoice.editsale');
-//     Route::post('/session-invoice/updatesale', [SessionInvoiceController::class, 'updatesale'])->name('session-invoice.updatesale');
-//     Route::get('/session-invoice/manage/{stuid}', [SessionInvoiceController::class, 'manage'])->name('session-invoice.manage');
 
-// });
 
 
 //Subject Route
@@ -236,9 +207,6 @@ Route::get('Search_student', [SearchController::class, 'index']);
 Route::post('Search_students', [SearchController::class, 'ajax_search'])->name('ajax_search_student');
 Route::get('/adv_search', [SearchController::class, 'adv_search'])->name("adv_search");
 
-//InvoiceReport Routes
-Route::get('invoices_report', [invoices_ReportController::class, 'index']);
-Route::post('Search_invoices', [invoices_ReportController::class, 'Search_invoices'])->name('searchinvoices');
 
 //StudentReport Routes
 Route::get('students_report', [student_Report::class, 'index']);
@@ -246,25 +214,12 @@ Route::post('search_students', [student_Report::class, 'Search_students'])->name
 Route::get('Students_By_Course', [student_Report::class, 'searchStudentsByCourse'])->name('search.students');
 Route::put('/update-course-year-serial/{studentId}/{courseId}', [StudentController::class, 'updateYearAndSerial'])->name('update.course.year.serial');
 
-//ICDLReport Routes
-Route::get('icdl_report', [Icdl_Report::class, 'index']);
-Route::post('search_icdl', [Icdl_Report::class, 'Search_icdl'])->name('searchicdl');
-
-//MarkReport Routes
-Route::get('mark_report', [Mark_Report::class, 'index']);
-Route::post('search_mark', [Mark_Report::class, 'Search_mark'])->name('searchmark');
-Route::post('/update-student-meter', [Mark_Report::class, 'updateStudentMeter'])->name('updateStudentMeter');
 
 //CertificateReport Routes
 Route::get('certifications_Report', [certification_Report::class, 'index']);
 Route::post('search_certification', [certification_Report::class, 'Search_certification'])->name('searchcertifications');
 Route::post('/certificate-request', [certification_Report::class, 'requestCertificate'])->name('certificate.request');
 Route::get('certificate-requests', [certification_Report::class, 'certificateRequests'])->name('certificate.requests');
-
-//Meter Routes
-Route::get('/meters', [MeterController::class, 'index'])->name('meters.index');
-Route::post('/meters/store', [MeterController::class, 'store'])->name('meters.store');
-
 
 //Print Routes
 Route::get('/print-invoices', [PrintController::class, 'printInvoices'])->name('print.invoices');
@@ -281,6 +236,12 @@ Route::prefix('payment')->name('payment.')->group(function () {
     Route::post('/store', [PaymentController::class, 'store'])->name('store');
     Route::delete('/delete/{id}', [PaymentController::class, 'deletePayment'])->name('destroy');
     Route::get('/summary/{studentId}', [PaymentController::class, 'summary'])->name('summary');
+    Route::put('/update/{id}', [PaymentController::class, 'updatePayment'])->name('update');
+});
+Route::get('/api/number-to-words/{number}', function ($number) {
+    return response()->json([
+        'words' => \App\Helpers\NumberHelper::toWords((float) $number),
+    ]);
 });
 
 // Other routes

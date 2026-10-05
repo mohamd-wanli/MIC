@@ -25,9 +25,11 @@ public function index(Request $request)
         $search = $request->search;
         $query->where(function ($q) use ($search) {
             $q->where('firstname', 'like', "%{$search}%")
-              ->orWhere('fathername', 'like', "%{$search}%")
+
               ->orWhere('lastname', 'like', "%{$search}%")
-              ->orWhere('fullname', 'like', "%{$search}%")
+
+            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"])
+
               ->orWhere('national_number', 'like', "%{$search}%");
         });
     }
@@ -37,45 +39,6 @@ public function index(Request $request)
     return view('student.student', compact('students'));
 }
 
-
-    // public function search(Request $request)
-    // {
-    //     $query = Student::query();
-
-    //     if ($request->has('search') && $request->search != '') {
-    //         $search = $request->search;
-    //         $query->where(function($q) use ($search) {
-    //             $q->where('firstname', 'like', "%{$search}%")
-    //                 ->orWhere('fathername', 'like', "%{$search}%")
-    //                 ->orWhere('lastname', 'like', "%{$search}%")
-    //                 ->orWhere('fullname', 'like', "%{$search}%")
-    //                 ->orWhere('national_number', 'like', "%{$search}%");
-    //         });
-    //     }
-
-    //     $students = $query->orderBy('created_at', 'desc')->get();
-
-    //     $i = 0;
-    //     $output = '';
-    //     if ($students->count() > 0) {
-    //         foreach ($students as $student) {
-    //             $i++;
-    //             $output .= "<tr>
-    //             <td>{$i}</td>
-    //             <td>{$student->firstname}</td>
-    //             <td>{$student->fathername}</td>
-    //             <td>{$student->lastname}</td>
-    //             <td>{$student->fullname}</td>
-    //             <td>{$student->national_number}</td>
-    //             <td><a href='" . route('student.show', $student->id) . "' class='btn btn-primary'>تفاصيل</a></td>
-    //         </tr>";
-    //         }
-    //     } else {
-    //         $output = "<tr><td colspan='7'>لا توجد نتائج مطابقة للبحث.</td></tr>";
-    //     }
-
-    //     return $output;
-    // }
 
 public function updateCourseGrade(Request $request, int $studentId, int $courseId)
 {
@@ -109,6 +72,13 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
         'isCreating' => true,              // flag to indicate creation mode
     ]);
 }
+public function printProfile(int $id)
+{
+    $student = Student::with(['Extrastudent', 'courses', 'payments'])
+        ->findOrFail($id);
+
+    return view('student.print_profile', compact('student'));
+}
 
 
     public function profilePdf(int $studentId,int  $courseId)
@@ -141,9 +111,10 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
 
         return $mpdf->Output('student-profile.pdf', 'I');
     }
-    public function store(Request $request)
-{
 
+
+    public function store(Request $request)
+    {
 
     $request->validate([
         // Personal info (required)
@@ -152,9 +123,6 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
         'lastname'        => 'required|string|max:255',
         'fullname'        => 'nullable|string|max:255',
         'national_number' => 'nullable|string|max:20',
-        'Nscn'            => 'nullable|string|max:20',
-        'Lscn'            => 'nullable|string|max:20',
-
         // Extra info (optional)
         'mothername'               => 'nullable|string|max:255',
         'date_of_birth'            => 'nullable|string',
@@ -170,11 +138,7 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
         'print_date'               => 'nullable|date',
         'notes'                    => 'nullable|string',
          'birth_date' => 'nullable|date',
-
-
     ]);
-
-
     // Create Student
     $student = Student::create([
         'firstname'       => $request->firstname,
@@ -182,16 +146,14 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
         'lastname'        => $request->lastname,
         'fullname'        => $request->firstname . ' ' . $request->fathername . ' ' . $request->lastname,
         'national_number' => $request->national_number,
-
+        'department_id'   => $request->user()?->department_id,
     ]);
-
     // Create Extrastudent
      Extrastudent::create([
         'student_id'               => $student->id,
         'engish_firstname'         => $request->engish_firstname,
         'engish_fathername'        => $request->engish_fathername,
         'english_lastname'         => $request->english_lastname,
-
         'gender'                   => $request->gender,
         'date_of_birth'            => $request->date_of_birth,
         'email'                    => $request->email,
@@ -205,12 +167,12 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
         'notes'                    => $request->notes,
         'birth_date'               => $request->birth_date,
     ]);
-
     // return redirect()->route('student.index')->with('success', 'تم إضافة الطالب بنجاح');
     return redirect()
     ->route('student.show', $student->id)
     ->with('success', 'تم إضافة الطالب بنجاح. يمكنك الآن إضافة الدورات والمدفوعات من نفس الصفحة.');
-}
+   }
+
 
     public function store2(Request $request)
     {
@@ -319,7 +281,9 @@ public function updateCourseGrade(Request $request, int $studentId, int $courseI
 
 
       $hasPageNumber=DB::table('stucourse')->where('course_id',$course_id)
-      ->whereNotNull('page_number')->exists();
+      ->whereNotNull('page_number')
+->where('page_number' , '!=' , 0)
+      ->exists();
 
       if($hasPageNumber){
         return response()->json(['error' => 'لا يمكن تسجيل الطالب في هذه الدورة لأنها تحتوي على رقم صفحة.'], 400);}
