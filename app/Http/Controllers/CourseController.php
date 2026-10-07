@@ -435,6 +435,7 @@ public function searchStudents(Request $request)
             ->leftJoin('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->leftJoin('courses', 'stucourse.course_id', '=', 'courses.id')
             ->leftJoin('certificatestudent', 'certificatestudent.student_id', '=', 'students.id')
+              ->leftJoin('subjects', 'courses.subject_id', '=', 'subjects.id')
             ->leftJoin('certificate_requests', function ($join) {
                 $join->on('stucourse.student_id', '=', 'certificate_requests.student_id')
                      ->on('stucourse.course_id', '=', 'certificate_requests.course_id');
@@ -458,7 +459,7 @@ public function searchStudents(Request $request)
             'stucourse.certificate_number',
             'stucourse.input_date',
             'certificatestudent.group_number',
-            'courses.subject_name as course_name',
+            'subjects.name as course_name',
             'courses.start_date as course_start_date',
             'courses.end_date as course_end_date',
             DB::raw('CASE WHEN certificate_requests.id IS NOT NULL THEN "✅" ELSE "❌" END as request_status')

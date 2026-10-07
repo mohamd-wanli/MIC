@@ -932,7 +932,8 @@ $remaining     = $course->price - $totalPaid - $totalDiscount;
                             @endphp
                             <tr>
                                 <td><span style="font-weight: 700; color: #667eea;">{{ $course->coursenumber }}</span></td>
-                                <td>{{ $course->subject_name }}</td>
+                                <td>{{ DB::table('subjects')->where('id', $course->subject_id)->value('name') }}</td>
+
                                 <td>{{ $course->start_date }}</td>
                                 <td>{{ $course->end_date }}</td>
                                 <td>{{ $course->start_hour }}</td>

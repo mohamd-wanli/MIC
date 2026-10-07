@@ -15,29 +15,29 @@ public function index(){
             $query->where('Value_Status', 2);
         })->get();
         return view('report.student_report' ,compact('sessions'));
-   
+
        }
-   
+
 public function Search_students(Request $request){
-            $sessionId = $request->input('session');  
-            $startAt = $request->input('start_at');  
-            $endAt = $request->input('end_at');       
-                 
+            $sessionId = $request->input('session');
+            $startAt = $request->input('start_at');
+            $endAt = $request->input('end_at');
+
             $session = Session::with('students')->find($sessionId);
             if (!$session) {
-             
+
                 return redirect()->back()->withErrors('الجلسة غير موجودة');
-            } 
+            }
             $students = $session->students();
-         
+
             if ($startAt) {
                 $students->wherePivot('created_at', '>=', $startAt);
             }
-        
+
             if ($endAt) {
                 $students->wherePivot('created_at', '<=', $endAt);
             }
-           
+
             $students = $session->students->map(function ($student) {
                 return [
                     'Nscn' => $student->Nscn,
@@ -47,57 +47,63 @@ public function Search_students(Request $request){
                     'english_fathername' => $student->english_fathername,
                     'english_grandfathername' => $student->english_grandfathername,
                     'english_lastname' => $student->english_lastname,
-                    'meter' => $student->pivot->meter, 
+                    'meter' => $student->pivot->meter,
                 ];
             });
-          
+
             $sessions = Session::whereHas('examday', function ($query) {
                 $query->where('Value_Status', 2);
             })->get();
-        
-       
-            return view('report.student_report', compact('students', 'sessions')); 
+
+
+            return view('report.student_report', compact('students', 'sessions'));
         }
 
 //  public function searchStudentsByCourse(Request $request)
-//     {
-//         $courses = Course::all();
-//         $students = collect();
+// {
+//     // Get distinct course names for the dropdown
+//     $courseNames = Course::join('subjects', 'courses.subject_id','=','subjects.id')
+//     ->select('subjects.name as subject_name')->distinct()->get();
 
-//         if ($request->filled('course_number') || $request->filled('teacher_name')) {
+//     $students = collect();
 
-//             $students = Student::whereHas('courses', function ($query) use ($request) {
+//     if ($request->filled('course_number') ) {
+//         $students = Student::whereHas('courses', function ($query) use ($request) {
+//             if ($request->filled('course_number')) {
+//                 $query->where('courses.coursenumber', $request->course_number);
+//             }
 
-//                 if ($request->filled('course_number')) {
-//                     $query->where('courses.coursenumber', $request->course_number);                }
-
-//                 if ($request->filled('teacher_name')) {
-//                     $query->where('subject_name', 'like', '%' . $request->teacher_name . '%');
-//                 }
-
-//             })->get();
-//         }
-
-//         return view('report.student_by_course', compact('students', 'courses'));
+//         })->get();
 //     }
- public function searchStudentsByCourse(Request $request)
+
+//     return view('report.student_by_course', compact('students', 'courseNames'));
+// }
+public function searchStudentsByCourse(Request $request)
 {
-    // Get distinct course names for the dropdown
-    $courseNames = Course::select('subject_name')->distinct()->get();
+    $courseNames = Course::join('subjects', 'courses.subject_id', '=', 'subjects.id')
+        ->select('subjects.name as subject_name')
+        ->distinct()
+        ->get();
 
-    $students = collect();
+    $students = null;
 
-    if ($request->filled('course_number') || $request->filled('teacher_name')) {
-        $students = Student::whereHas('courses', function ($query) use ($request) {
+    if ($request->filled('course_number') || $request->filled('course_name')) {
+        $query = Student::query()->whereHas('courses', function ($courseQuery) use ($request) {
             if ($request->filled('course_number')) {
-                $query->where('courses.coursenumber', $request->course_number);
+                $courseQuery->where('courses.coursenumber', $request->input('course_number'));
             }
-            if ($request->filled('teacher_name')) {
-                $query->where('subject_name', 'like', '%' . $request->teacher_name . '%');
+
+            if ($request->filled('course_name')) {
+                $courseQuery->whereHas('subject', function ($subjectQuery) use ($request) {
+                    $subjectQuery->where('subjects.name', $request->input('course_name'));
+                });
             }
-        })->get();
+        });
+
+        $students = $query->get();
     }
 
     return view('report.student_by_course', compact('students', 'courseNames'));
 }
+
 }

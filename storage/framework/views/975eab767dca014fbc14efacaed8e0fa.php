@@ -525,23 +525,24 @@
                         </div>
                     </div>
 
-                 <div class="col-md-5">
-    <div class="form-group">
-        <label for="teacher_name">
-            <i class="fas fa-book" style="color: #667eea;"></i>
-            اسم الدورة
-        </label>
-        <select name="teacher_name" id="teacher_name" class="form-control">
-            <option value="">-- اختر دورة --</option>
-            <?php $__currentLoopData = $courseNames; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <option value="<?php echo e($course->subject_name); ?>" <?php echo e(request('teacher_name') == $course->subject_name ? 'selected' : ''); ?>>
-                    <?php echo e($course->subject_name); ?>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="course_name">
+                                <i class="fas fa-book" style="color: #667eea;"></i>
+                                اسم الدورة
+                            </label>
+                            <select name="course_name" id="course_name" class="form-control">
+                                <option value="">-- اختر دورة --</option>
+                                <?php $__currentLoopData = $courseNames; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($course->subject_name); ?>"
+                                        <?php echo e(request('course_name') == $course->subject_name ? 'selected' : ''); ?>>
+                                        <?php echo e($course->subject_name); ?>
 
-                </option>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </select>
-    </div>
-</div>
+                                    </option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="col-md-2">
                         <button type="submit" class="btn-search-modern">
@@ -552,6 +553,7 @@
                 </div>
             </form>
         </div>
+
 
         <!-- Results Section -->
         <div class="report-container-modern">
@@ -605,7 +607,7 @@
                         طباعة كشف حضور
                     </a>
 
-                    <a href="<?php echo e(route('print', request()->all())); ?>"
+                    <a href="<?php echo e(route('print.students', request()->all())); ?>"
                        target="_blank"
                        class="btn-print-modern btn-warning">
                         <i class="fas fa-print"></i>
@@ -647,27 +649,6 @@
     </div>
 
 </div>
-<?php $__env->stopSection(); ?>
-
-<?php $__env->startSection('js'); ?>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Auto-submit on Enter key
-        document.querySelector('form').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.submit();
-            }
-        });
-document.getElementById('teacher_name').addEventListener('change', function() {
-    this.closest('form').submit();
-});
-        // Focus on first input if empty
-        <?php if(!request('course_number') && !request('teacher_name')): ?>
-            document.getElementById('course_number').focus();
-        <?php endif; ?>
-    });
-</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\wanli\Desktop\mic\resources\views/report/student_by_course.blade.php ENDPATH**/ ?>

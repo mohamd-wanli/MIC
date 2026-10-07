@@ -527,22 +527,23 @@
                         </div>
                     </div>
 
-                 <div class="col-md-5">
-    <div class="form-group">
-        <label for="teacher_name">
-            <i class="fas fa-book" style="color: #667eea;"></i>
-            اسم الدورة
-        </label>
-        <select name="teacher_name" id="teacher_name" class="form-control">
-            <option value="">-- اختر دورة --</option>
-            @foreach($courseNames as $course)
-                <option value="{{ $course->subject_name }}" {{ request('teacher_name') == $course->subject_name ? 'selected' : '' }}>
-                    {{ $course->subject_name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-</div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="course_name">
+                                <i class="fas fa-book" style="color: #667eea;"></i>
+                                اسم الدورة
+                            </label>
+                            <select name="course_name" id="course_name" class="form-control">
+                                <option value="">-- اختر دورة --</option>
+                                @foreach($courseNames as $course)
+                                    <option value="{{ $course->subject_name }}"
+                                        {{ request('course_name') == $course->subject_name ? 'selected' : '' }}>
+                                        {{ $course->subject_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="col-md-2">
                         <button type="submit" class="btn-search-modern">
@@ -553,6 +554,7 @@
                 </div>
             </form>
         </div>
+
 
         <!-- Results Section -->
         <div class="report-container-modern">
@@ -605,7 +607,7 @@
                         طباعة كشف حضور
                     </a>
 
-                    <a href="{{ route('print', request()->all()) }}"
+                    <a href="{{ route('print.students', request()->all()) }}"
                        target="_blank"
                        class="btn-print-modern btn-warning">
                         <i class="fas fa-print"></i>
@@ -647,25 +649,4 @@
     </div>
 
 </div>
-@endsection
-
-@section('js')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Auto-submit on Enter key
-        document.querySelector('form').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.submit();
-            }
-        });
-document.getElementById('teacher_name').addEventListener('change', function() {
-    this.closest('form').submit();
-});
-        // Focus on first input if empty
-        @if(!request('course_number') && !request('teacher_name'))
-            document.getElementById('course_number').focus();
-        @endif
-    });
-</script>
 @endsection
