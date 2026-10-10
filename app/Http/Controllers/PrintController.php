@@ -15,25 +15,25 @@ class PrintController extends Controller
 public function printInvoices(Request $request)
     {
         $query = Invoice::with('student');
-    
+
         if (!empty($request->department_id)) {
             $query->where('department_id', $request->department_id);
         }
-    
+
         if (!empty($request->course_id)) {
             $query->where('course_id', $request->course_id);
         }
-    
+
         if (!empty($request->start_at) && !empty($request->end_at)) {
             $query->whereBetween('payment_date', [$request->start_at, $request->end_at]);
         }
-    
+
         if (!empty($request->type)) {
             $query->where('payment_type', $request->type);
         }
-    
+
         $invoices = $query->get();
-    
+
         return view('print.invoices', compact('invoices'));
     }
 

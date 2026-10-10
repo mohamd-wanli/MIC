@@ -195,7 +195,7 @@
 
     <div class="left">
         @if($course)
-            <strong>رقم الدورة :</strong> {{ $course->id }}
+            <strong>رقم الدورة :</strong> {{ $course->coursenumber }}
         @endif
     </div>
 

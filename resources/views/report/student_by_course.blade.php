@@ -607,7 +607,7 @@
                         طباعة كشف حضور
                     </a>
 
-                    <a href="{{ route('print.students', request()->all()) }}"
+                    <a href="{{ route('print', request()->all()) }}"
                        target="_blank"
                        class="btn-print-modern btn-warning">
                         <i class="fas fa-print"></i>

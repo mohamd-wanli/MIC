@@ -20,86 +20,104 @@ class ReportController extends Controller
 {
     public function printStudents(Request $request)
     {
-        $course = null;
+            $students = [];
+    $courseQuery = Course::query();
 
-        if ($request->filled('course_number')) {
-            $course = Course::find($request->course_number);
-        }
+    if ($request->filled('course_number')) {
+        $courseQuery->where('coursenumber', $request->input('course_number'));
+    }
 
-       $students = [];
+    if ($request->filled('course_name')) {
+        $courseQuery->whereHas('subject', function ($subjectQuery) use ($request) {
+            $subjectQuery->where('subjects.name', $request->input('course_name'));
+        });
+    }
 
-    $course = Course::where('coursenumber', $request->course_number)
-        ->where('subject_name', 'like', '%' . $request->teacher_name . '%')
-        ->first();
+    $course = $courseQuery->first();
 
-    if ($course) {
+    if ($course !== null) {
         $students = Student::whereHas('courses', function ($query) use ($course) {
             $query->where('course_id', $course->id);
         })->get();
     }
 
+
         return view('report.print_students', compact('students','course'));
     }
 
 
+
 public function financialReport(Request $request)
 {
-    // 1. Get students matching search criteria
-    $studentIds = Student::whereHas('courses', function ($query) use ($request) {
-        if ($request->filled('course_number')) {
-            $query->where('courses.coursenumber', $request->course_number);
-        }
-        if ($request->filled('teacher_name')) {
-            $query->where('subject_name', 'like', '%' . $request->teacher_name . '%');
-        }
+    // 1. Find the course using the correct search (course_number + course_name via subject)
+    $courseQuery = Course::query();
+
+    if ($request->filled('course_number')) {
+        $courseQuery->where('coursenumber', $request->input('course_number'));
+    }
+
+    if ($request->filled('course_name')) {
+        $courseQuery->whereHas('subject', function ($subjectQuery) use ($request) {
+            $subjectQuery->where('subjects.name', $request->input('course_name'));
+        });
+    }
+
+    $course = $courseQuery->first();
+
+    // 2. If no course matches, return an empty report (no payments to show)
+    if ($course === null) {
+        return view('report.financial_report', [
+            'studentSummaries' => [],
+            'courseInfo'       => null,
+            'totalExpected'    => 0,
+            'totalPaidOverall' => 0,
+            'totalRemaining'   => 0,
+        ]);
+    }
+
+    // 3. Get students enrolled in that course
+    $studentIds = Student::whereHas('courses', function ($query) use ($course) {
+        $query->where('course_id', $course->id);
     })->pluck('id');
 
-    // 2. Fetch payments for those students, with relations
+    // 4. Fetch payments for those students, for THIS course only
     $payments = Payment::with(['student', 'course'])
         ->whereIn('student_id', $studentIds)
-        ->whereHas('course', function ($query) use ($request) {
-            if ($request->filled('course_number')) {
-                $query->where('coursenumber', $request->course_number);
-            }
-            if ($request->filled('teacher_name')) {
-                $query->where('subject_name', 'like', '%' . $request->teacher_name . '%');
-            }
-        })
+        ->where('course_id', $course->id)
         ->orderBy('student_id')
         ->orderBy('created_at')
         ->get();
 
-    // 3. Group by student
+    // 5. Group by student
     $groupedPayments = $payments->groupBy('student_id');
 
-    // 4. Get course info from first payment
-    $courseInfo = $payments->first()?->course;
+    // 6. Course info is already known
+    $courseInfo = $course;
 
-    // 5. Build per-student summaries
+    // 7. Build per-student summaries
     $studentSummaries = [];
-    $totalExpected = 0;
+    $totalExpected    = 0;
     $totalPaidOverall = 0;
 
     foreach ($groupedPayments as $studentId => $paymentsForStudent) {
-        $student = $paymentsForStudent->first()->student;
-        $course = $paymentsForStudent->first()->course;
-        $totalPaid = $paymentsForStudent->sum('payment_value');
-        $totalDiscount=$paymentsForStudent->sum('discount');
-        $coursePrice = $course->price ?? 0;
+        $student      = $paymentsForStudent->first()->student;
+        $totalPaid    = $paymentsForStudent->sum('payment_value');
+        $totalDiscount = $paymentsForStudent->sum('discount');
+        $coursePrice  = $course->price ?? 0;
 
-        $netPrice = $coursePrice - $totalDiscount;
+        $netPrice  = $coursePrice - $totalDiscount;
         $remaining = $netPrice - $totalPaid;
 
-        $totalExpected += $netPrice;
+        $totalExpected    += $netPrice;
         $totalPaidOverall += $totalPaid;
 
         $studentSummaries[] = (object) [
-            'student' => $student,
-            'course' => $course,
-            'totalPaid' => $totalPaid,
-            'remaining' => $remaining,
-            'payments' => $paymentsForStudent,
-                'totalDiscount' => $totalDiscount,
+            'student'       => $student,
+            'course'        => $course,
+            'totalPaid'     => $totalPaid,
+            'remaining'     => $remaining,
+            'payments'      => $paymentsForStudent,
+            'totalDiscount' => $totalDiscount,
         ];
     }
 

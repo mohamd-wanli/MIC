@@ -656,11 +656,21 @@ public function searchByName(Request $request)
 {
 
       $students = [];
-    $course = Course::where('coursenumber', $request->course_number)
-        ->where('subject_name', 'like', '%' . $request->teacher_name . '%')
-        ->first();
+    $courseQuery = Course::query();
 
-    if ($course) {
+    if ($request->filled('course_number')) {
+        $courseQuery->where('coursenumber', $request->input('course_number'));
+    }
+
+    if ($request->filled('course_name')) {
+        $courseQuery->whereHas('subject', function ($subjectQuery) use ($request) {
+            $subjectQuery->where('subjects.name', $request->input('course_name'));
+        });
+    }
+
+    $course = $courseQuery->first();
+
+    if ($course !== null) {
         $students = Student::whereHas('courses', function ($query) use ($course) {
             $query->where('course_id', $course->id);
         })->get();

@@ -225,6 +225,7 @@ Route::get('certificate-requests', [certification_Report::class, 'certificateReq
 Route::get('/print-invoices', [PrintController::class, 'printInvoices'])->name('print.invoices');
 Route::get('/print-students', [PrintController::class, 'printStudentsByCourse'])->name('print.students');
 Route::get('/print-icdl-report', [PrintController::class, 'printIcdl'])->name('print.icdl.report');
+Route::get('/print', [\App\Http\Controllers\ReportController::class, 'printStudents'])->name('print');
 
 Route::get('/get-department-roles/{department}', function ($departmentId) {
     $department = Department::findOrFail($departmentId);

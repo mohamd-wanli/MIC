@@ -363,7 +363,7 @@
         <div class="course-details">
             <table class="course-details-table">
                 <tr>
-                    <td><strong>رقم الدورة:</strong> {{ $courseInfo->id ?? '' }}</td>
+                    <td><strong>رقم الدورة:</strong> {{ $courseInfo->coursenumber ?? '' }}</td>
                     <td><strong>المادة:</strong> {{ $courseInfo->subject_name ?? '' }}</td>
                     <td><strong>المدرس:</strong> {{ $courseInfo->teacher_name ?? '' }}</td>
                     <td><strong>التوقيت:</strong> {{ $courseInfo->start_time ?? '' }}</td>
