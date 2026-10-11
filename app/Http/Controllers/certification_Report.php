@@ -21,7 +21,7 @@ class certification_Report extends Controller
 
 
 
-        return view('report.certification_report', compact('courses','students','courseInfo'));
+        return view('report.certification_report', compact('courses','courseInfo'));
     }
 
     public function Search_certification(Request $request)
