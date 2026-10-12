@@ -17,10 +17,6 @@ class certification_Report extends Controller
         $courses = Course::all();
         $students = Student::with('Extrastudent')->get();
         $courseInfo = null;
-
-
-
-
         return view('report.certification_report', compact('courses','courseInfo'));
     }
 
@@ -35,8 +31,8 @@ class certification_Report extends Controller
             ->join('stucourse', 'students.id', '=', 'stucourse.student_id')
             ->join('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->join('courses', 'stucourse.course_id', '=', 'courses.id')
-            ->join('subjects', 'courses.subject_id', '=', 'subjects.id')
-             ->leftJoin('departments', 'courses.department_id', '=', 'departments.id')
+ ->join('subjects', 'courses.subject_id', '=', 'subjects.id')
+->leftJoin('departments', 'courses.department_id', '=', 'departments.id')
 
             ->select(
                 'students.id as student_id',
@@ -67,7 +63,7 @@ class certification_Report extends Controller
                 'courses.teacher_name',
                 'courses.start_hour',
                 'courses.end_hour',
-                 'departments.name as department_name',
+ 'departments.name as department_name',
             )
 
 
@@ -114,13 +110,13 @@ class certification_Report extends Controller
     }
     $student->certificate_eligible = ($age !== null && $age >= 15);
     return $student;
-      });
+});
 
         return view('report.certification_report', compact('students', 'courses', 'courseInfo','page_number'));
 
     }
        public function exportExcel(Request $request)
-     {
+{
     $startAt     = $request->start_at;
     $endAt       = $request->end_at;
     $teacherName = $request->teacher_name;

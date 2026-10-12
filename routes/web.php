@@ -4,6 +4,7 @@ use App\Http\Controllers\certification_Report;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ExamDayController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Icdl_Report;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\invoices_ReportController;
@@ -43,8 +44,9 @@ Route::get('/student/search', [StudentController::class, 'search'])->name('stude
 Route::put('/update-course-grade/{studentId}/{courseId}',
 [App\Http\Controllers\StudentController::class, 'updateCourseGrade'])->name('update.course.grade');
 
-
-
+Route::get('/group-report/export',
+    [HomeController::class, 'exportGroupReport'])
+    ->name('group.report.export');
 Route::middleware(['auth'])->group(function () {
 
     // Handover page (search & surrender)

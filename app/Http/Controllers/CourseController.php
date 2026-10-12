@@ -17,9 +17,6 @@ use Carbon\Carbon;
 class CourseController extends Controller
 {
 
-
-
-
 public function index(Request $request)
 {
     $departments = Department::all();
@@ -133,6 +130,35 @@ public function index(Request $request)
             return redirect()->route('showcourses')->with('success', 'تم إضافة الدورة بنجاح');
         }
 
+ public function gradesReport(Request $request)
+{
+        $students = [];
+    $courseQuery = Course::query();
+
+    if ($request->filled('course_number')) {
+        $courseQuery->where('coursenumber', $request->input('course_number'));
+    }
+
+    if ($request->filled('course_name')) {
+        $courseQuery->whereHas('subject', function ($subjectQuery) use ($request) {
+            $subjectQuery->where('subjects.name', $request->input('course_name'));
+        });
+    }
+
+    $course = $courseQuery->first();
+
+    if ($course !== null) {
+        $students = Student::whereHas('courses', function ($query) use ($course) {
+            $query->where('course_id', $course->id);
+        })->get();
+    }
+
+
+    abort_if(!$course, 404, 'لم يتم العثور على الدورة');
+
+    return view('report.course_grade', compact('course'));
+}
+
 
 public function getSubjects(int $departmentId){
         $user = Auth::user();
@@ -194,8 +220,6 @@ public function saveAllCourseGrades(Request $request)
     return response()->json(['success' => true]);
     }
 
-
-
     public function assignPageNumbers(Request $request)
 {
     $request->validate([
@@ -206,13 +230,10 @@ public function saveAllCourseGrades(Request $request)
      $course = Course::findOrFail($request->course_id);
        $newPage = $request->page_number;
      $students=$course->students;
-
-
     // Check if any student in this course already has a page number
     $hasPageNumber = DB::table('stucourse')
                         ->where('course_id', $course->id)
                         ->whereNotNull('page_number')
-
                         ->exists();
 
 
@@ -222,7 +243,6 @@ public function saveAllCourseGrades(Request $request)
        if($pageExists){
         return redirect()->back()->with('error', 'رقم الصفحة موجود مسبقاً لدورة أخرى');
        }
-
 
 
     foreach($students as $student){
@@ -235,6 +255,36 @@ public function saveAllCourseGrades(Request $request)
         );
     }
 
+    // // Get all students of this course
+    // $students = $course->students()->orderBy('student_id')->get();
+
+    // // If no page number was assigned before, we need to generate general numbers
+    // if (!$hasPageNumber) {
+    //     // Get the last general number for this year
+    //     $courseYear = Carbon::parse($course->end_date)->year;
+    //     $lastGlobalGeneralNumber = DB::table('stucourse')
+    //         ->join('courses', 'stucourse.course_id', '=', 'courses.id')
+    //         ->whereYear('courses.end_date', $courseYear)
+    //         ->max('stucourse.general_number') ?? 0;
+    // }
+
+    // foreach ($students as $student) {
+    //     $data = [
+    //         'page_number' => $newPageNumber,
+    //     ];
+
+        // // Only assign general_number if it's the first time (no page number existed before)
+        // if (!$hasPageNumber) {
+        //     $lastGlobalGeneralNumber++;
+        //     $data['general_number'] = $lastGlobalGeneralNumber;
+        // }
+
+    //     DB::table('stucourse')
+    //         ->where('course_id', $course->id)
+    //         ->where('student_id', $student->id)
+    //         ->update($data);
+    // }
+
     // Remove course from session (as before)
     $selectedCourses = session('selected_courses', []);
     if (($key = array_search($course->id, $selectedCourses)) !== false) {
@@ -246,31 +296,27 @@ public function saveAllCourseGrades(Request $request)
         ->with('success', 'تم إدخال رقم الصفحة' . ($hasPageNumber ? ' وتحديثه' : '') . ' وحذف الدورة من قائمة قيد العمل.');
 }
 
-   public function edit($id)
+public function edit($id)
     {
     $course = Course::findOrFail($id);
     $user = Auth::user();
 
-
+    // جلب الأقسام فقط للمشرف
     $departments = $user->department_id === null ? Department::all() : null;
 
-
+    // جلب المواد حسب القسم
     $subjects = Subject::where('department_id', $course->department_id)->get();
-        $subjects    = Subject::orderBy('name')->get();
 
-
+    // جلب المدرسين المرتبطين بالمادة الحالية
     $teachers = Teacher::whereHas('subjects', function ($query) use ($course) {
         $query->where('name', $course->subject_name);
     })->get();
-     $teachers    = Teacher::all();
-
+       $teachers    = Teacher::all();
+ $subjects    = Subject::orderBy('name')->get();
 
     return view('course.editcourse', compact('course', 'departments', 'subjects', 'teachers'));
    }
-
-
-
-     public function update(Request $request, int $id)
+ public function update(Request $request, int $id)
 
      {
 
@@ -333,6 +379,8 @@ public function saveAllCourseGrades(Request $request)
 
     return redirect()->route('showcourses')->with('success', 'تم تعديل الدورة بنجاح');
 }
+
+
 
 public function Course_active(Request $request)
 {
@@ -435,7 +483,7 @@ public function searchStudents(Request $request)
             ->leftJoin('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->leftJoin('courses', 'stucourse.course_id', '=', 'courses.id')
             ->leftJoin('certificatestudent', 'certificatestudent.student_id', '=', 'students.id')
-              ->leftJoin('subjects', 'courses.subject_id', '=', 'subjects.id')
+            ->leftJoin('subjects', 'courses.subject_id', '=', 'subjects.id')
             ->leftJoin('certificate_requests', function ($join) {
                 $join->on('stucourse.student_id', '=', 'certificate_requests.student_id')
                      ->on('stucourse.course_id', '=', 'certificate_requests.course_id');
@@ -459,7 +507,7 @@ public function searchStudents(Request $request)
             'stucourse.certificate_number',
             'stucourse.input_date',
             'certificatestudent.group_number',
-            'subjects.name as course_name',
+           'subjects.name as course_name',
             'courses.start_date as course_start_date',
             'courses.end_date as course_end_date',
             DB::raw('CASE WHEN certificate_requests.id IS NOT NULL THEN "✅" ELSE "❌" END as request_status')
@@ -652,34 +700,7 @@ public function searchByName(Request $request)
 
         return response()->json(['status' => 'success']);
     }
-  public function gradesReport(Request $request)
-{
 
-      $students = [];
-    $courseQuery = Course::query();
-
-    if ($request->filled('course_number')) {
-        $courseQuery->where('coursenumber', $request->input('course_number'));
-    }
-
-    if ($request->filled('course_name')) {
-        $courseQuery->whereHas('subject', function ($subjectQuery) use ($request) {
-            $subjectQuery->where('subjects.name', $request->input('course_name'));
-        });
-    }
-
-    $course = $courseQuery->first();
-
-    if ($course !== null) {
-        $students = Student::whereHas('courses', function ($query) use ($course) {
-            $query->where('course_id', $course->id);
-        })->get();
-    }
-
-    abort_if(!$course, 404, 'لم يتم العثور على الدورة');
-
-    return view('report.course_grade', compact('course'));
-}
   public function deleteCourse($id)
 {
     $course = Course::find($id);

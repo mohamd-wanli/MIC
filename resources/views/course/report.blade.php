@@ -577,6 +577,33 @@
             font-size: 0.65rem;
         }
     }
+    /* Excel Button */
+.btn-excel-modern {
+    background: linear-gradient(135deg, #107e3e, #21a95c);
+    color: #ffffff;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(16, 126, 62, 0.35);
+    margin-top: 20px;
+}
+
+.btn-excel-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(16, 126, 62, 0.45);
+    color: #ffffff;
+}
+
+@media print {
+    .btn-excel-modern { display: none !important; }
+}
 </style>
 @endsection
 
@@ -756,6 +783,11 @@
                     <i class="fas fa-print"></i>
                     طباعة التقرير
                 </button>
+           <a href="{{ route('group.report.export', ['group_number' => request('group_number')]) }}"
+       class="btn-excel-modern">
+        <i class="fas fa-file-excel"></i>
+        تصدير Excel
+    </a>
                 <span style="color: #6c757d; font-size: 0.85rem; margin-right: 15px;">
                     <i class="fas fa-info-circle"></i>
                     عدد الطلاب: <strong>{{ $students->count() }}</strong>
