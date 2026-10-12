@@ -35,6 +35,7 @@ class certification_Report extends Controller
             ->join('stucourse', 'students.id', '=', 'stucourse.student_id')
             ->join('extra_student', 'extra_student.student_id', '=', 'students.id')
             ->join('courses', 'stucourse.course_id', '=', 'courses.id')
+            ->join('subjects', 'courses.subject_id', '=', 'subjects.id')
              ->leftJoin('departments', 'courses.department_id', '=', 'departments.id')
 
             ->select(
@@ -60,7 +61,7 @@ class certification_Report extends Controller
                        ) as teacherfull"),
 
                 // معلومات الدورة
-                'courses.subject_name as course_name',
+                'subjects.name as course_name',
                 'courses.start_date',
                 'courses.end_date',
                 'courses.teacher_name',
