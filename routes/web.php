@@ -47,6 +47,8 @@ Route::put('/update-course-grade/{studentId}/{courseId}',
 Route::get('/group-report/export',
     [HomeController::class, 'exportGroupReport'])
     ->name('group.report.export');
+
+    
 Route::middleware(['auth'])->group(function () {
 
     // Handover page (search & surrender)

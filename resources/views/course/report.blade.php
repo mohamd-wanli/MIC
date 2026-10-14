@@ -783,11 +783,11 @@
                     <i class="fas fa-print"></i>
                     طباعة التقرير
                 </button>
-           <a href="{{ route('group.report.export', ['group_number' => request('group_number')]) }}"
-       class="btn-excel-modern">
-        <i class="fas fa-file-excel"></i>
-        تصدير Excel
-    </a>
+        <a href="{{ url('group-report/export') }}?group_number={{ request('group_number') }}"
+   class="btn-excel-modern">
+    <i class="fas fa-file-excel"></i>
+    تصدير Excel
+</a>
                 <span style="color: #6c757d; font-size: 0.85rem; margin-right: 15px;">
                     <i class="fas fa-info-circle"></i>
                     عدد الطلاب: <strong>{{ $students->count() }}</strong>
