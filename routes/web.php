@@ -22,6 +22,8 @@ use App\Http\Controllers\MeterController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReportController;
+
+
 use App\Http\Controllers\SessionInvoiceController;
 use App\Models\Subject;
 use App\Models\Department;
@@ -36,7 +38,10 @@ Route::get('/student/{id}/print-profile',
     [StudentController::class, 'printProfile'])
     ->name('student.print.profile');
 Route::get('/payment/print/{id}', [PaymentController::class, 'printReceipt'])->name('payment.print');
+Route::middleware(['auth'])->group(function (){
 Route::get('/home', [CourseController::class, 'homeIndex'])->name('home');
+
+});
 // Route::get('/', function () {
 //     return redirect()->route('home');
 // });
@@ -48,7 +53,7 @@ Route::get('/group-report/export',
     [HomeController::class, 'exportGroupReport'])
     ->name('group.report.export');
 
-    
+
 Route::middleware(['auth'])->group(function () {
 
     // Handover page (search & surrender)
