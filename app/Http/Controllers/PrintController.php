@@ -52,7 +52,9 @@ public function printStudentsByCourse(Request $request)
         });
     }
 
-    $course = $courseQuery->first();
+    $course = $courseQuery->with(['students' => function ($query) {
+        $query->orderBy('students.fullname', 'asc');
+    }])->first();
 
     if ($course !== null) {
         $students = Student::whereHas('courses', function ($query) use ($course) {

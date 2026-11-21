@@ -133,7 +133,9 @@ public function index(Request $request)
  public function gradesReport(Request $request)
 {
         $students = [];
-    $courseQuery = Course::query();
+    $courseQuery = Course::with(['students' => function ($query) {
+        $query->orderBy('students.fullname', 'asc');
+    }]);
 
     if ($request->filled('course_number')) {
         $courseQuery->where('coursenumber', $request->input('course_number'));

@@ -100,7 +100,7 @@ public function searchStudentsByCourse(Request $request)
             }
         });
 
-        $students = $query->get();
+        $students = $query->orderBy('students.fullname', 'asc')->get();
     }
 
     return view('report.student_by_course', compact('students', 'courseNames'));

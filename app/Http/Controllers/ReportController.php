@@ -38,7 +38,7 @@ class ReportController extends Controller
     if ($course !== null) {
         $students = Student::whereHas('courses', function ($query) use ($course) {
             $query->where('course_id', $course->id);
-        })->get();
+        })->orderBy('students.fullname', 'asc')->get();
     }
 
 
@@ -84,6 +84,8 @@ public function financialReport(Request $request)
     $payments = Payment::with(['student', 'course'])
         ->whereIn('student_id', $studentIds)
         ->where('course_id', $course->id)
+        ->orderBy(DB::table('students')->select('fullname')
+            ->whereColumn('students.id', 'payments.student_id'), 'asc')
         ->orderBy('student_id')
         ->orderBy('created_at')
         ->get();
